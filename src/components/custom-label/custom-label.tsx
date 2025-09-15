@@ -1,35 +1,29 @@
-//import { Controller, useForm, FormProvider } from "react-hook-form";
+import React from "react";
 import { Box, Typography } from "@mui/material";
-import PropTypes from "prop-types";
 import { customLabelStyles } from "./custom-label-styles";
 
 interface CustomFormLabelProps {
   label: string | React.ReactNode;
   isRequired?: boolean;
-  style?:React.CSSProperties;
+  style?: React.CSSProperties;
 }
 
-function CustomLabel(props: CustomFormLabelProps) {
-  const { label, isRequired, style } = props;
-
+const CustomLabel = React.memo<CustomFormLabelProps>(({ label, isRequired, style }) => {
   return (
-    <Box mb={1} sx={{ ...style }}>
+    <Box mb={1} sx={style}>
       <Typography
-        sx={{
-          //fontWeight: 500,
-          letterSpacing: "inherit"
-        }}
         variant="body1"
+        sx={{
+          letterSpacing: "inherit",
+        }}
       >
         {label}
         {isRequired && <span style={customLabelStyles.required}>*</span>}
       </Typography>
     </Box>
   );
-}
+});
 
-CustomLabel.propTypes = {
-  label: PropTypes.string,
-};
+CustomLabel.displayName = "CustomLabel";
 
 export default CustomLabel;
