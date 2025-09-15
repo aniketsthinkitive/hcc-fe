@@ -1,15 +1,6 @@
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import {
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputBase,
-  Typography,
-} from "@mui/material";
-import { ChangeEvent, useEffect, useState } from "react";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import SearchIcon from "@mui/icons-material/Search";
+import { Visibility, VisibilityOff, ArrowDropDown, ArrowDropUp, Search } from "@mui/icons-material";
+import { Box, IconButton, Typography } from "@mui/material";
+import { type ChangeEvent, useEffect, useState } from "react";
 import { customInputStyles, errorStyle } from "./custom-input-styles";
 
 interface CustomInputProps {
@@ -48,6 +39,7 @@ export default function CustomInput(props: CustomInputProps) {
     required = false,
     icon
   } = props;
+  
   const [showPassword, setShowPassword] = useState(false);
   const [inputValue, setInputValue] = useState<string | number>(props.value ?? "");
 
@@ -60,7 +52,9 @@ export default function CustomInput(props: CustomInputProps) {
   };
 
   const handleClickArrow = () => {
-    onClickNotify && onClickNotify();
+    if (onClickNotify) {
+      onClickNotify();
+    }
   };
 
   const handleMouseDownPassword = (
@@ -90,7 +84,6 @@ export default function CustomInput(props: CustomInputProps) {
     }
   };
 
-
   const formatPhoneNumber = (value: string) => {
     const cleaned = value.replace(/\D/g, ""); // Remove non-numeric characters
     const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
@@ -105,101 +98,115 @@ export default function CustomInput(props: CustomInputProps) {
     return formatted;
   };
 
+  const rootStyles = {
+    ...customInputStyles.textFieldRoot,
+    ...(props.hasError && customInputStyles.textFieldError),
+    background: bgWhite ? "white" : customInputStyles.textFieldRoot.background,
+  };
+
   return (
-    <Grid container flexDirection={"column"}>
-      <InputBase
-        fullWidth
-        className="popper-area"
-        name={props.name}
-        type={showPassword ? "text" : props.isPassword ? "password" : "text"}
-        placeholder={props.placeholder}
-        value={inputValue}
-        sx={{
-          background: bgWhite ? "white" : "inherit",
-          height: props.multiline ? "fit-content" : "40px",
-          // borderRadius: props.multiline ? "25px" : "40px",
-          ...customInputStyles.textFieldRoot,
-          ...(props.hasError && customInputStyles.textFieldError),
-          ...(props.isPassword && customInputStyles.textFieldActive),
-          ...customInputStyles.textFieldInput,
-        }}
-        inputProps={{
-          maxLength: maxLength ? maxLength : "", style: {
-            fontSize: '14px', fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-            letterSpacing: "0.25%",
-            lineHeight: "150%"
-          },
-        }}
-        onChange={handleInputChange}
-        error={props.hasError}
-        required={required}
-        disabled={props.disableField}
-        // inputMode={props.isNumeric ? "number" : "text"}
-        inputMode={
-          props.isNumeric ? "numeric" : props.isDecimal ? "decimal" : "text"
-        }
-        // onInput={
-        //   props.isNumeric
-        //     ? (e: ChangeEvent<HTMLInputElement>) => {
-        //         e.target.value = e.target.value.replace(/[^0-9]/g, "");
-        //       }
-        //     : undefined
-        // }
-        onInput={
-          props.isNumeric
-            ? (e: ChangeEvent<HTMLInputElement>) => {
-              e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      <Box sx={rootStyles}>
+        {/* Start Icon or Search Icon */}
+        {(icon || (hasStartSearchIcon && !startSearchIconOnRight)) && (
+          <Box sx={customInputStyles.iconStyle}>
+            {icon || <Search />}
+          </Box>
+        )}
+        
+        {/* Input Field */}
+        {props.multiline ? (
+          <Box
+            component="textarea"
+            name={props.name}
+            placeholder={props.placeholder}
+            value={inputValue}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => handleInputChange(e as unknown as ChangeEvent<HTMLInputElement>)}
+            disabled={props.disableField}
+            required={required}
+            maxLength={maxLength}
+            rows={props.rows}
+            sx={{
+              ...customInputStyles.textFieldInput,
+              resize: 'vertical',
+              minHeight: props.rows ? `${props.rows * 1.5}em` : '60px',
+            }}
+            onInput={
+              props.isNumeric
+                ? (e: React.FormEvent<HTMLTextAreaElement>) => {
+                  (e.target as HTMLTextAreaElement).value = (e.target as HTMLTextAreaElement).value.replace(/[^0-9]/g, "");
+                }
+                : props.isDecimal
+                  ? (e: React.FormEvent<HTMLTextAreaElement>) => {
+                    (e.target as HTMLTextAreaElement).value = (e.target as HTMLTextAreaElement).value.replace(/[^0-9.]/g, "");
+                  }
+                  : undefined
             }
-            : props.isDecimal
-              ? (e: ChangeEvent<HTMLInputElement>) => {
-                e.target.value = e.target.value.replace(/[^0-9.]/g, "");
-              }
-              : undefined
-        }
-        classes={{
-          root: `${customInputStyles.textFieldRoot}`,
-          input: `${customInputStyles.textFieldInput}`,
-          focused: `${customInputStyles.textFieldActive}`,
-          error: `${customInputStyles.textFieldError}`,
-        }}
-        multiline={props.multiline}
-        rows={props.rows}
-        startAdornment={
-          <InputAdornment position="start" sx={{paddingLeft:"12px"}}>
-            {icon || (hasStartSearchIcon && !startSearchIconOnRight && <SearchIcon />)}
-          </InputAdornment>
-        }
-        // startAdornment={
-        //   <InputAdornment position="end">
-        //     {hasStartSearchIcon && !startSearchIconOnRight && <SearchIcon />}
-        //   </InputAdornment>
-        // }
-        endAdornment={
-          <InputAdornment position="end">
-            {props.isPassword && (
-              <IconButton
-                onClick={handleClickShowPassword}
-                onMouseDown={handleMouseDownPassword}
-              >
-                {showPassword ? <Visibility /> : <VisibilityOff />}
-              </IconButton>
-            )}
-            {hasOpenListArrow && (
-              <IconButton onClick={handleClickArrow}>
-                {showPassword ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-              </IconButton>
-            )}
-            <InputAdornment position="end">
-              {hasStartSearchIcon && startSearchIconOnRight && (
-                <SearchIcon sx={{ marginRight: "10px" }} />
-              )}
-            </InputAdornment>
-          </InputAdornment>
-        }
-      />
+          />
+        ) : (
+          <Box
+            component="input"
+            name={props.name}
+            type={showPassword ? "text" : props.isPassword ? "password" : "text"}
+            placeholder={props.placeholder}
+            value={inputValue}
+            onChange={handleInputChange}
+            disabled={props.disableField}
+            required={required}
+            maxLength={maxLength}
+            inputMode={
+              props.isNumeric ? "numeric" : props.isDecimal ? "decimal" : "text"
+            }
+            sx={customInputStyles.textFieldInput}
+            onInput={
+              props.isNumeric
+                ? (e: React.FormEvent<HTMLInputElement>) => {
+                  (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9]/g, "");
+                }
+                : props.isDecimal
+                  ? (e: React.FormEvent<HTMLInputElement>) => {
+                    (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, "");
+                  }
+                  : undefined
+            }
+          />
+        )}
+
+        {/* Password Toggle */}
+        {props.isPassword && (
+          <IconButton
+            onClick={handleClickShowPassword}
+            onMouseDown={handleMouseDownPassword}
+            sx={customInputStyles.iconStyle}
+            size="small"
+          >
+            {showPassword ? <Visibility /> : <VisibilityOff />}
+          </IconButton>
+        )}
+
+        {/* Arrow Dropdown */}
+        {hasOpenListArrow && (
+          <IconButton 
+            onClick={handleClickArrow}
+            sx={customInputStyles.iconStyle}
+            size="small"
+          >
+            {showPassword ? <ArrowDropUp /> : <ArrowDropDown />}
+          </IconButton>
+        )}
+
+        {/* End Search Icon */}
+        {hasStartSearchIcon && startSearchIconOnRight && (
+          <Box sx={customInputStyles.iconStyle}>
+            <Search />
+          </Box>
+        )}
+      </Box>
+
+      {/* Error Message */}
       <Typography sx={errorStyle} variant="caption">
         {props.hasError ? props.errorMessage : ""}
       </Typography>
-    </Grid>
+    </Box>
   );
 }
