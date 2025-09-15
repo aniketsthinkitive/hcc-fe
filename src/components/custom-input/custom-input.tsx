@@ -1,4 +1,8 @@
-import { Visibility, VisibilityOff, ArrowDropDown, ArrowDropUp, Search } from "@mui/icons-material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUp from "@mui/icons-material/ArrowDropUp";
+import Search from "@mui/icons-material/Search";
 import { Box, IconButton, Typography } from "@mui/material";
 import { type ChangeEvent, useEffect, useState } from "react";
 import { customInputStyles, errorStyle } from "./custom-input-styles";
