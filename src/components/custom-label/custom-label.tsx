@@ -19,7 +19,7 @@ function CustomLabel(props: CustomFormLabelProps) {
           //fontWeight: 500,
           letterSpacing: "inherit"
         }}
-        variant="body4"
+        variant="body1"
       >
         {label}
         {isRequired && <span style={customLabelStyles.required}>*</span>}
