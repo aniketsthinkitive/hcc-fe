@@ -135,7 +135,7 @@ const CsvFileUpload = ({ onUpload }: MultipleFilesUploadProps) => {
           alignItems="center"
           width={"80%"}
         >
-          <Grid item container alignItems="center" width="fit-content" gap={5}>
+          <Grid container alignItems="center" width="fit-content" gap={5}>
             <Grid
               container
               justifyContent="center"
@@ -147,7 +147,7 @@ const CsvFileUpload = ({ onUpload }: MultipleFilesUploadProps) => {
             </Grid>
             <Typography variant="body1">{uploadedFile.name}</Typography>
           </Grid>
-          <Grid item>
+          <Grid>
             <IconButton onClick={handleDelete}>
               <CloseIcon />
             </IconButton>

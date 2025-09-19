@@ -1,8 +1,10 @@
 export const errorStyle = {
-  color: '#ef4444',
+  color: '#CA1C1C', // Error Red from Figma
   fontSize: '12px',
   marginTop: '4px',
-  fontFamily: 'Helvetica Neue, Arial, sans-serif',
+  fontFamily: '"Inter", "Geist", "Helvetica Neue", "Roboto", "Arial", sans-serif',
+  fontWeight: 400,
+  lineHeight: '1.2',
 };
 
 export const customInputStyles = {
@@ -11,20 +13,26 @@ export const customInputStyles = {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    padding: '8px 10px',
+    padding: '16px 12px', // 16px vertical, 12px horizontal from Figma
     gap: '8px',
     width: '100%',
-    minHeight: '38px',
+    minHeight: '48px', // Increased from 38px to match Figma
     background: '#FFFFFF',
-    border: '1px solid #CDD0CD',
-    boxShadow: '0px 1px 2px rgba(16, 24, 40, 0.05)',
+    border: '1px solid #DDE0DD', // Neutral/10 from Figma
+    boxShadow: 'none', // Removed shadow to match Figma
     borderRadius: '6px',
+    fontFamily: '"Inter", "Geist", "Helvetica Neue", "Roboto", "Arial", sans-serif',
     '&:hover': {
-      borderColor: '#A9ACA9',
+      borderColor: '#CDD0CD', // Neutral/20 from Figma
     },
     '&:focus-within': {
-      borderColor: '#2C2D2C',
-      boxShadow: '0px 1px 2px rgba(16, 24, 40, 0.05), 0 0 0 1px #2C2D2C',
+      borderColor: '#439322', // Primary Green from Figma
+      boxShadow: 'none',
+    },
+    '&.disabled': {
+      backgroundColor: '#F2F2F2', // Neutral/5 from Figma
+      borderColor: '#DDE0DD', // Neutral/10 from Figma
+      cursor: 'not-allowed',
     },
   },
   textFieldInput: {
@@ -32,32 +40,55 @@ export const customInputStyles = {
     border: 'none',
     outline: 'none',
     background: 'transparent',
-    fontFamily: 'Helvetica Neue, Arial, sans-serif',
+    fontFamily: '"Inter", "Geist", "Helvetica Neue", "Roboto", "Arial", sans-serif',
     fontStyle: 'normal',
     fontWeight: 400,
-    fontSize: '14px',
-    lineHeight: '160%',
-    color: '#2C2D2C',
+    fontSize: '16px', // Increased from 14px to match Figma
+    lineHeight: '1.5', // 150% line height
+    color: '#2C2D2C', // Neutral/80 from Figma
     '&::placeholder': {
-      color: '#A9ACA9',
-      fontFamily: 'Helvetica Neue, Arial, sans-serif',
+      color: '#A9ACA9', // Neutral/40 from Figma
+      fontFamily: '"Inter", "Geist", "Helvetica Neue", "Roboto", "Arial", sans-serif',
       fontWeight: 400,
-      fontSize: '14px',
-      lineHeight: '160%',
+      fontSize: '16px',
+      lineHeight: '1.5',
+    },
+    '&.disabled': {
+      color: '#A9ACA9', // Neutral/40 from Figma
+      cursor: 'not-allowed',
     },
   },
   textFieldError: {
-    borderColor: '#ef4444',
+    borderColor: '#CA1C1C', // Error Red from Figma
     '&:focus-within': {
-      borderColor: '#ef4444',
-      boxShadow: '0px 1px 2px rgba(16, 24, 40, 0.05), 0 0 0 1px #ef4444',
+      borderColor: '#CA1C1C', // Error Red from Figma
+      boxShadow: 'none',
     },
   },
   iconStyle: {
-    width: '18px',
-    height: '18px',
-    color: '#2C2D2C',
+    width: '20px', // Increased from 18px to match Figma
+    height: '20px',
+    color: '#2C2D2C', // Neutral/80 from Figma
     flexShrink: 0,
+  },
+  // Additional styles for different states
+  textFieldFocus: {
+    borderColor: '#439322', // Primary Green from Figma
+    '& input': {
+      color: '#439322', // Primary Green text when focused
+    },
+  },
+  textFieldDisabled: {
+    backgroundColor: '#F2F2F2', // Neutral/5 from Figma
+    borderColor: '#DDE0DD', // Neutral/10 from Figma
+    cursor: 'not-allowed',
+    '& input': {
+      color: '#A9ACA9', // Neutral/40 from Figma
+      cursor: 'not-allowed',
+    },
+    '& .iconStyle': {
+      color: '#A9ACA9', // Neutral/40 from Figma
+    },
   },
 };
 

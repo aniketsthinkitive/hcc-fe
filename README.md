@@ -1,69 +1,83 @@
-# React + TypeScript + Vite
+# HCC Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React/TypeScript frontend application for healthcare client management, built with Vite, Material-UI, and React Router.
 
-Currently, two official plugins are available:
+## Description
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This is a comprehensive healthcare client management system frontend that provides features for:
+- User authentication and authorization
+- Client management
+- Scheduling and appointments
+- Billing and payments
+- Reports and analytics
+- Treatment management
+- Intake forms and referrals
 
-## Expanding the ESLint configuration
+The application uses modern React patterns with TypeScript, Material-UI for components, and includes a custom grid system and reusable UI components.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## How to Run
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Frontend Application
+To run the React development server:
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The application will be available at `http://localhost:5173`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Python Scripts
+To run the main Python script:
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+python main.py
 ```
+
+## How to Test
+
+### Frontend Testing
+To run the frontend tests:
+
+```bash
+npm test
+```
+
+To run linting:
+
+```bash
+npm run lint
+```
+
+### Python Testing
+To run the Python tests:
+
+```bash
+pytest test_main.py
+```
+
+## Build for Production
+
+To build the application for production:
+
+```bash
+npm run build
+```
+
+To preview the production build:
+
+```bash
+npm run preview
+```
+
+## Tech Stack
+
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **Material-UI** - Component library
+- **React Router** - Client-side routing
+- **Emotion** - CSS-in-JS styling
+- **Yup** - Form validation
+- **Day.js** - Date manipulation
+- **ESLint & Prettier** - Code quality and formatting

@@ -1,6 +1,6 @@
 import { styled, TextareaAutosize, Typography } from "@mui/material";
 import { ChangeEvent } from "react";
-import { errorStyle } from "../custom-input/widgets/custom-input-styles";
+import { errorStyle } from "../custom-input/custom-input-styles";
 import { editTextAreaStyle } from "./widgets/custom-textarea-widgets";
 
 interface CustomTextAreaProps {
@@ -17,7 +17,9 @@ interface CustomTextAreaProps {
   defaultValue?: string;
 }
 
-const StyledTextarea = styled(TextareaAutosize)<{ hasError?: boolean }>(
+const StyledTextarea = styled(TextareaAutosize, {
+  shouldForwardProp: (prop) => prop !== 'hasError',
+})<{ hasError?: boolean }>(
   ({ hasError }) => ({
     ...editTextAreaStyle.textArea,
     borderColor: hasError ? "red" : "#D3D3D3",

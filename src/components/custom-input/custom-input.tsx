@@ -16,6 +16,7 @@ interface CustomInputProps {
   hasError?: boolean;
   errorMessage?: string | undefined;
   isPassword?: boolean;
+  isEmail?: boolean;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   disableField?: boolean;
   bgWhite?: boolean;
@@ -46,6 +47,7 @@ export default function CustomInput(props: CustomInputProps) {
   
   const [showPassword, setShowPassword] = useState(false);
   const [inputValue, setInputValue] = useState<string | number>(props.value ?? "");
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     setInputValue(props.value ?? "");
@@ -105,6 +107,8 @@ export default function CustomInput(props: CustomInputProps) {
   const rootStyles = {
     ...customInputStyles.textFieldRoot,
     ...(props.hasError && customInputStyles.textFieldError),
+    ...(props.disableField && customInputStyles.textFieldDisabled),
+    ...(isFocused && !props.hasError && customInputStyles.textFieldFocus),
     background: bgWhite ? "white" : customInputStyles.textFieldRoot.background,
   };
 
@@ -135,6 +139,8 @@ export default function CustomInput(props: CustomInputProps) {
               resize: 'vertical',
               minHeight: props.rows ? `${props.rows * 1.5}em` : '60px',
             }}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             onInput={
               props.isNumeric
                 ? (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -151,7 +157,7 @@ export default function CustomInput(props: CustomInputProps) {
           <Box
             component="input"
             name={props.name}
-            type={showPassword ? "text" : props.isPassword ? "password" : "text"}
+            type={showPassword ? "text" : props.isPassword ? "password" : props.isEmail ? "email" : "text"}
             placeholder={props.placeholder}
             value={inputValue}
             onChange={handleInputChange}
@@ -162,6 +168,8 @@ export default function CustomInput(props: CustomInputProps) {
               props.isNumeric ? "numeric" : props.isDecimal ? "decimal" : "text"
             }
             sx={customInputStyles.textFieldInput}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             onInput={
               props.isNumeric
                 ? (e: React.FormEvent<HTMLInputElement>) => {

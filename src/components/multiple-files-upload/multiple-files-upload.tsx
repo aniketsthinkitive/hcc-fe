@@ -171,7 +171,7 @@ const MultipleFilesUpload = (props: MultipleFilesUploadProps) => {
             )}
             <Typography variant="body1">{item.name}</Typography>
           </Grid>
-          <Grid item>
+          <Grid>
             <IconButton onClick={() => handleDelete(index)}>
               <CloseIcon />
             </IconButton>
