@@ -41,12 +41,12 @@ const CustomDrawer = (props: React.PropsWithChildren<DrawerProps>) => {
             sx={gridHeader}
             mt={props.headerStyle}
           >
-            <Grid item>
+            <Grid>
               <Typography sx={drawerHeader} variant="h6">
                 {props.title}
               </Typography>
             </Grid>
-            <Grid item>
+            <Grid>
               <IconButton onClick={props.onClose}>
                 <CloseOutlinedIcon />
               </IconButton>

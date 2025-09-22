@@ -2,10 +2,10 @@ import {
   Grid,
   MenuItem,
   Select,
-  SelectChangeEvent,
+  type SelectChangeEvent,
   Typography,
 } from "@mui/material";
-import { errorStyle } from "../custom-input/widgets/custom-input-styles";
+import { errorStyle } from "../custom-input/custom-input-styles";
 import {
   customSelectStyles,
   selectInputStyle,

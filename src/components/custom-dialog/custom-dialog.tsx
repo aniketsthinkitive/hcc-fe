@@ -62,7 +62,7 @@ const CustomDialog = (props: React.PropsWithChildren<CustomDialogProps>) => {
           <Grid>
             <Typography variant="body3">{title}</Typography>
           </Grid>
-          <Grid item>
+          <Grid>
             <IconButton
               aria-label="close"
               onClick={onClose}
@@ -75,7 +75,7 @@ const CustomDialog = (props: React.PropsWithChildren<CustomDialogProps>) => {
         <Divider orientation="horizontal" sx={{ m: "10px 0px" }} />
       </DialogTitle>
       <DialogContent sx={{ overflow: overFlow, padding: padding }}>
-        <Grid item flex={1}>
+        <Grid flex={1}>
           {props.children}
         </Grid>
       </DialogContent>

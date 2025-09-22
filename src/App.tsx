@@ -1,10 +1,21 @@
+import { BrowserRouter as Router } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { AuthProvider } from './features/auth/hooks/useAuth';
+import AppRoutes from './routes/routes';
+import { theme } from './constant/styles/theme';
 import "./App.css";
 
 function App() {
   return (
-    <>
-      <h1>test</h1>
-    </>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AuthProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
