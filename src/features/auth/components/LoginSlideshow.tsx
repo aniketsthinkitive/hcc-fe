@@ -6,8 +6,8 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import counselingImage1 from '../../../assets/images/counseling3.jpg';
-import counselingImage2 from '../../../assets/images/counseling4.jpg';
-import counselingImage3 from '../../../assets/images/login.png';
+import counselingImage2 from '../../../assets/images/login-2.jpg';
+import counselingImage3 from '../../../assets/images/login-1.jpg'; 
 
 interface SlideData {
   id: number;
@@ -20,20 +20,20 @@ const slides: SlideData[] = [
   {
     id: 1,
     image: counselingImage1,
-    title: "Professional Counseling Services",
-    description: "Access expert mental health professionals and licensed counselors for personalized therapy sessions and support."
+    title: "Convenient Telehealth Programs",
+    description: "Log in to attend state-approved DUI classes, therapy, and support sessions all from the comfort of your home."
   },
   {
     id: 2,
     image: counselingImage2,
-    title: "Comprehensive Mental Health Care",
-    description: "Join our supportive community and receive evidence-based treatment for substance abuse, anxiety, depression, and more."
+    title: "Professional Counseling Services",
+    description: "Access expert mental health professionals and licensed counselors for personalized therapy sessions and support."
   },
   {
     id: 3,
     image: counselingImage3,
-    title: "Secure Healthcare Platform",
-    description: "Experience a safe, confidential, and user-friendly platform designed specifically for healthcare professionals and patients."
+    title: "Comprehensive Mental Health Care",
+    description: "Join our supportive community and receive evidence-based treatment for substance abuse, anxiety, depression, and more."
   }
 ];
 
@@ -44,7 +44,7 @@ const LoginSlideshow: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
-    }, 4000); // 4 seconds duration
+    }, 3000); // 5 seconds duration
 
     return () => clearInterval(interval);
   }, []);
@@ -65,81 +65,87 @@ const LoginSlideshow: React.FC = () => {
         justifyContent: 'flex-end',
         alignItems: 'flex-start',
         padding: 0,
-        transition: 'background-image 0.5s ease-in-out',
+        transition: 'background-image 0.2s smooth',
         // Fallback background color
         backgroundColor: '#f0f0f0',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%)',
-          zIndex: 1,
-        },
       }}
     >
-      {/* Content Overlay */}
+      {/* Content Overlay with full width and bottom alignment */}
       <Box
         sx={{
           position: 'relative',
           zIndex: 100,
-          padding: 4,
-          width: '100%',
-          color: 'white',
-          backdropFilter: 'blur(1px)',
-          backgroundColor: 'rgba(0, 0, 0, 0.3)',
-          borderRadius: '12px 12px 0 0',
-          margin: 'left 18px',
+          width: '100%', // Full width
+          padding: '24px 32px', // 24px top/bottom, 32px left/right
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '32px', // 32px gap between content and pagination
+          // Exact Figma gradient and blur
+          background: 'linear-gradient(179deg, rgba(20, 41, 65, 0) 0%, rgba(12, 16, 17, 0.8) 84%)',
+          backdropFilter: 'blur(12px)',
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: 700,
-            mb: 2,
-            fontSize: { xs: '1.5rem', md: '2rem' },
-            lineHeight: 1.2,
-            color: 'white',
-          }}
-        >
-          {currentSlideData.title}
-        </Typography>
-        
-        <Typography
-          variant="body1"
-          sx={{
-            opacity: 0.9,
-            maxWidth: 400,
-            fontSize: { xs: '0.9rem', md: '1rem' },
-            lineHeight: 1.6,
-            mb: 3,
-            color: 'white',
-          }}
-        >
-          {currentSlideData.description}
-        </Typography>
-
-        {/* Pagination dots */}
+        {/* Text Content Container */}
         <Box
           sx={{
             display: 'flex',
-            gap: 2,
+            flexDirection: 'column',
+            gap: '16px', // 16px gap between title and description
+            maxWidth: { xs: '100%', md: '620px' }, // Max width for content readability
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 600,
+              fontSize: { xs: '24px', md: '28px' },
+              lineHeight: 1.2,
+              color: '#FFFFFF',
+              textAlign: 'left',
+              margin: 0,
+            }}
+          >
+            {currentSlideData.title}
+          </Typography>
+          
+          <Typography
+            variant="body1"
+            sx={{
+              fontWeight: 400,
+              fontSize: { xs: '16px', md: '18px' },
+              lineHeight: 1.6,
+              color: '#FFFFFF',
+              textAlign: 'left',
+              margin: 0,
+            }}
+          >
+            {currentSlideData.description}
+          </Typography>
+        </Box>
+
+        {/* Pagination dots with exact Figma specifications */}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            gap: '12px', // 12px gap between dots
+            width: 'fit-content',
+            alignSelf: 'flex-start',
           }}
         >
           {slides.map((_, index) => (
             <Box
               key={index}
               sx={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                backgroundColor: index === currentSlide ? 'white' : 'rgba(255, 255, 255, 0.3)',
-                transition: 'all 0.3s ease',
+                width: '12px',
+                height: '8px',
+                borderRadius: '4px',
+                backgroundColor: index === currentSlide ? '#FFFFFF' : '#757775', // Solid/White and Neutral/60
+                transition: 'background-color 0.2s ease',
                 cursor: 'pointer',
                 '&:hover': {
-                  backgroundColor: index === currentSlide ? 'white' : 'rgba(255, 255, 255, 0.6)',
+                  backgroundColor: index === currentSlide ? '#FFFFFF' : 'rgba(255, 255, 255, 0.8)',
                 },
               }}
               onClick={() => setCurrentSlide(index)}

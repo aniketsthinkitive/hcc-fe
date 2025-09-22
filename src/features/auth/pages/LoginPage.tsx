@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { LoginForm } from '../components/LoginForm';
 import { useAuth } from '../hooks/useAuth';
-import Logo from './../../../components/Logo';
+import logo from '../../../assets/images/logo-main.svg?url';
 import LoginSlideshow from '../components/LoginSlideshow';
 import { GridContainer, GridRow, GridColumn } from '../../../components/grid';
 
@@ -41,9 +41,10 @@ export const LoginPage: React.FC = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        height: '100vh',
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
+        overflow: 'hidden',
       }}
     >
       {/* Marketing Section - Left Column */}
@@ -52,6 +53,7 @@ export const LoginPage: React.FC = () => {
           sx={{
             flex: '0 0 50%',
             height: '100vh',
+            overflow: 'hidden',
           }}
         >
           <LoginSlideshow />
@@ -68,7 +70,8 @@ export const LoginPage: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'center',
           padding: { xs: theme.spacing(2), md: theme.spacing(4) },
-          minHeight: { xs: '100vh', md: 'auto' },
+          height: { xs: '100vh', md: '100vh' },
+          overflow: 'auto',
         }}
       >
         <GridContainer maxWidth="sm">
@@ -76,7 +79,16 @@ export const LoginPage: React.FC = () => {
             <GridColumn mobile={4} tablet={8} desktop={12}>
               {/* Logo */}
               <Box sx={{ mb: 4, textAlign: 'center' }}>
-                <Logo />
+                <Box
+                  component="img"
+                  src={logo}
+                  alt="5280 Human Care Center Logo"
+                  sx={{
+                    width: { xs: 180, sm: 200, md: 230 },
+                    height: 'auto',
+                    maxWidth: '100%',
+                  }}
+                />
               </Box>
 
               {/* Login Card */}
@@ -84,10 +96,10 @@ export const LoginPage: React.FC = () => {
                 elevation={0}
                 sx={{
                   width: '100%',
-                  maxWidth: 400,
+                  maxWidth: 480,
                   margin: '0 auto',
-                  padding: theme.spacing(4),
-                  borderRadius: theme.shape.borderRadius,
+                  padding: theme.spacing(3),
+                  borderRadius: 1,
                   boxShadow: '0px 2px 8px 0px rgba(0, 0, 0, 0.08)',
                   backgroundColor: theme.palette.background.paper,
                   border: `1px solid ${theme.palette.divider}`,
@@ -98,16 +110,16 @@ export const LoginPage: React.FC = () => {
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'center',
+                    alignItems: 'left',
                     gap: 1,
-                    mb: 4,
+                    mb: 3,
                   }}
                 >
                   <Typography
                     variant="h4"
                     sx={{
-                      textAlign: 'center',
-                      color: theme.palette.text.primary,
+                      textAlign: 'left',
+                      color: 'black',
                       mb: 1,
                     }}
                   >
@@ -117,12 +129,12 @@ export const LoginPage: React.FC = () => {
                   <Typography
                     variant="body2"
                     sx={{
-                      textAlign: 'center',
+                      textAlign: 'left',
                       color: theme.palette.text.secondary,
                       maxWidth: 300,
                     }}
                   >
-                    Use your new credentials to access provider account
+                  Use your new credentials to access provider account
                   </Typography>
                 </Box>
 

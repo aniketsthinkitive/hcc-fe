@@ -117,10 +117,17 @@ export default function CustomButton({
 
   // Get current text styles based on state
   const getCurrentTextStyles = (): React.CSSProperties => {
-    if (disabled || loading) {
-      return { ...styles.text, ...styles.textDisabled };
+    let textStyles = { ...styles.text };
+    
+    // Set text color based on variant
+    if (variant === 'primary') {
+      textStyles.color = '#FFFFFF';
     }
-    return styles.text;
+    
+    if (disabled || loading) {
+      return { ...textStyles, ...styles.textDisabled };
+    }
+    return textStyles;
   };
 
   // Get current icon styles based on state

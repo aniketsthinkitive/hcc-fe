@@ -248,12 +248,6 @@ export const getButtonStyles = (
       cursor: 'not-allowed',
       transform: 'none',
       boxShadow: 'none',
-      '&:hover': {
-        backgroundColor: '#F5F5F5',
-        color: '#CCCCCC',
-        transform: 'none',
-        boxShadow: 'none',
-      },
     },
     text: {
       fontFamily: baseFontFamily,

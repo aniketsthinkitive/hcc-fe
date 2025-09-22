@@ -6,7 +6,6 @@ import {
   Box,
   Link,
   Alert,
-  Typography,
 } from '@mui/material';
 import {
   Mail as MailIcon,
@@ -190,7 +189,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
             fontWeight: 500,
             lineHeight: 1.15,
             textDecoration: 'none',
-            color: '#10B981',
+            color: '#primary.main',
             '&:hover': {
               textDecoration: 'underline',
               color: '#059669',
