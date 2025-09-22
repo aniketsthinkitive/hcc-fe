@@ -35,7 +35,9 @@ const sizes = {
 };
 
 // Base checkbox container
-export const CheckboxContainer = styled(Box)<{
+export const CheckboxContainer = styled(Box, {
+  shouldForwardProp: (prop) => !['size', 'checked', 'disabled', 'focused', 'hovered'].includes(prop as string),
+})<{
   size: 'sm' | 'md';
   checked: boolean;
   disabled: boolean;
@@ -80,7 +82,9 @@ export const CheckboxContainer = styled(Box)<{
 });
 
 // Check icon
-export const CheckIcon = styled('svg')<{
+export const CheckIcon = styled('svg', {
+  shouldForwardProp: (prop) => !['size', 'checked', 'disabled'].includes(prop as string),
+})<{
   size: 'sm' | 'md';
   checked: boolean;
   disabled: boolean;
@@ -106,7 +110,9 @@ export const CheckIcon = styled('svg')<{
 });
 
 // Minus icon for indeterminate state
-export const MinusIcon = styled('svg')<{
+export const MinusIcon = styled('svg', {
+  shouldForwardProp: (prop) => !['size', 'checked', 'disabled'].includes(prop as string),
+})<{
   size: 'sm' | 'md';
   checked: boolean;
   disabled: boolean;
@@ -132,7 +138,9 @@ export const MinusIcon = styled('svg')<{
 });
 
 // Custom FormControlLabel
-export const CustomFormControlLabel = styled(FormControlLabel)<{
+export const CustomFormControlLabel = styled(FormControlLabel, {
+  shouldForwardProp: (prop) => !['size', 'disabled'].includes(prop as string),
+})<{
   size: 'sm' | 'md';
   disabled: boolean;
 }>(({ size, disabled }) => {
@@ -140,20 +148,22 @@ export const CustomFormControlLabel = styled(FormControlLabel)<{
   
   return {
     margin: 0,
-    alignItems: 'flex-start',
+    alignItems: 'center', // Changed from 'flex-start' to 'center' for proper alignment
     gap: gap,
     '& .MuiFormControlLabel-label': {
       fontSize: size === 'sm' ? '14px' : '16px',
       lineHeight: size === 'sm' ? 1.6 : 1.6,
       color: disabled ? colors.neutral[40] : colors.neutral[80],
       margin: 0,
-      paddingTop: size === 'sm' ? '2px' : '0px',
+      paddingTop: 0, // Removed the padding that was causing misalignment
     },
   };
 });
 
 // Supporting text container
-export const SupportingTextContainer = styled(Box)<{
+export const SupportingTextContainer = styled(Box, {
+  shouldForwardProp: (prop) => !['size', 'disabled'].includes(prop as string),
+})<{
   size: 'sm' | 'md';
   disabled: boolean;
 }>(({ size, disabled }) => {
@@ -166,7 +176,9 @@ export const SupportingTextContainer = styled(Box)<{
 });
 
 // Main container for checkbox with text
-export const CheckboxWithTextContainer = styled(Box)<{
+export const CheckboxWithTextContainer = styled(Box, {
+  shouldForwardProp: (prop) => !['size'].includes(prop as string),
+})<{
   size: 'sm' | 'md';
 }>(({ size }) => {
   return {

@@ -2,7 +2,11 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Import page components
-import { LoginPage } from '../features/auth/pages/LoginPage';
+import { LoginPage as ClientLoginPage } from '../features/auth/pages/Client/LoginPage';
+import { LoginPage as ClinicianLoginPage } from '../features/auth/pages/Clinician/LoginPage';
+import { SetPassword as ClientSetPassword } from '../features/auth/pages/Client/SetPassword';
+import { SetPassword as ClinicianSetPassword } from '../features/auth/pages/Clinician/SetPassword';
+import { ForgotPassword as ClinicianForgotPassword } from '../features/auth/pages/Clinician/ForgotPassword';
 import TestPage from '../pages/TestPage';
 
 // Import admin layout and pages
@@ -27,8 +31,16 @@ const AppRoutes: React.FC = () => {
       {/* Test Page - Main page for testing components */}
       <Route path="/test" element={<TestPage />} />
       
-      {/* Login Page */}
-      <Route path="/login" element={<LoginPage />} />
+      {/* Login Pages */}
+      <Route path="/login" element={<ClientLoginPage />} />
+      <Route path="/clinician/login" element={<ClinicianLoginPage />} />
+      
+      {/* Forgot Password Pages */}
+      <Route path="/clinician/forgot-password" element={<ClinicianForgotPassword />} />
+      
+      {/* Set Password Pages */}
+      <Route path="/set-password" element={<ClientSetPassword />} />
+      <Route path="/clinician/set-password" element={<ClinicianSetPassword />} />
       
       {/* Admin Routes with Layout */}
       <Route path="/admin" element={<AdminLayout />}>

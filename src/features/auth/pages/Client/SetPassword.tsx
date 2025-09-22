@@ -7,15 +7,13 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import { LoginForm } from '../components/LoginForm';
-import { useAuth } from '../hooks/useAuth';
-import logo from '../../../assets/images/logo-main.svg?url';
-import LoginSlideshow from '../components/LoginSlideshow';
-import { GridContainer, GridRow, GridColumn } from '../../../components/grid';
+import { SetPasswordForm } from '../../components/SetPasswordForm';
+import { useAuth } from '../../hooks/useAuth';
+import logo from '../../../../assets/images/logo-main.svg?url';
+import LoginSlideshow from '../../components/LoginSlideshow';
+import { GridContainer, GridRow, GridColumn } from '../../../../components/grid';
 
-
-
-export const LoginPage: React.FC = () => {
+export const SetPassword: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
@@ -29,13 +27,13 @@ export const LoginPage: React.FC = () => {
     }
   }, [isAuthenticated, user, navigate, getRedirectPathForCurrentUser]);
 
-  const handleLoginSuccess = () => {
-    // The useEffect above will handle the redirect
-    // This is just a callback for any additional logic
+  const handleSetPasswordSuccess = () => {
+    // Navigate to login page or dashboard after successful password set
+    navigate('/login', { replace: true });
   };
 
   if (isAuthenticated) {
-    return null; // Prevent flash of login page while redirecting
+    return null; // Prevent flash of set password page while redirecting
   }
 
   return (
@@ -60,11 +58,11 @@ export const LoginPage: React.FC = () => {
         </Box>
       )}
 
-      {/* Login Section - Right Column */}
+      {/* Set Password Section - Right Column */}
       <Box
         sx={{
           flex: { xs: '1', md: '0 0 50%' },
-          backgroundColor: theme.palette.background.default,
+          backgroundColor: '#ECF2F3',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -91,7 +89,7 @@ export const LoginPage: React.FC = () => {
                 />
               </Box>
 
-              {/* Login Card */}
+              {/* Set Password Card */}
               <Paper
                 elevation={0}
                 sx={{
@@ -123,7 +121,7 @@ export const LoginPage: React.FC = () => {
                       mb: 1,
                     }}
                   >
-                    Sign In To Your Account
+                    Set Password
                   </Typography>
                   
                   <Typography
@@ -134,12 +132,12 @@ export const LoginPage: React.FC = () => {
                       maxWidth: 300,
                     }}
                   >
-                  Use your new credentials to access provider account
+                    Welcome! Please create your password.
                   </Typography>
                 </Box>
 
-                {/* Login Form */}
-                <LoginForm onSuccess={handleLoginSuccess} />
+                {/* Set Password Form */}
+                <SetPasswordForm onSuccess={handleSetPasswordSuccess} />
               </Paper>
             </GridColumn>
           </GridRow>
@@ -149,4 +147,4 @@ export const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default SetPassword;
