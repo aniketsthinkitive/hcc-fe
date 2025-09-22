@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Typography, Paper, Button, Grid } from "@mui/material";
 import theme from "../../../constant/styles/theme";
 
-const TimeSlotsComponent: React.FC = () => {
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+interface TimeSlotsComponentProps {
+  selectedTime?: string | null;
+  onTimeSelect?: (time: string | null) => void;
+  hasError?: boolean;
+  errorMessage?: string;
+}
 
+const TimeSlotsComponent: React.FC<TimeSlotsComponentProps> = ({
+  selectedTime = null,
+  onTimeSelect,
+  hasError = false,
+  errorMessage,
+}) => {
   const timeSlots = [
     "09:00 AM",
     "09:30 AM",
@@ -28,6 +38,11 @@ const TimeSlotsComponent: React.FC = () => {
     "04:30 PM",
   ];
 
+  const handleSlotClick = (slot: string) => {
+    const newValue = selectedTime === slot ? null : slot;
+    onTimeSelect?.(newValue);
+  };
+
   return (
     <Paper
       elevation={0}
@@ -36,7 +51,7 @@ const TimeSlotsComponent: React.FC = () => {
         borderRadius: 2,
         p: 3,
         height: "100%",
-        border: "1px solid #E7E9EB",
+        border: hasError ? "1px solid #d32f2f" : "1px solid #E7E9EB",
       }}
     >
       <Box sx={{ mb: 2 }}>
@@ -88,8 +103,8 @@ const TimeSlotsComponent: React.FC = () => {
           {timeSlots.map((slot, index) => (
             <Grid size={6} key={`${slot}-${index}`}>
               <Button
-                variant={selectedSlot === slot ? "contained" : "outlined"}
-                onClick={() => setSelectedSlot(slot)}
+                variant={selectedTime === slot ? "contained" : "outlined"}
+                onClick={() => handleSlotClick(slot)}
                 sx={{
                   width: "100%",
                   minHeight: "50px",
@@ -98,18 +113,18 @@ const TimeSlotsComponent: React.FC = () => {
                   fontWeight: 500,
                   borderRadius: 2,
                   backgroundColor:
-                    selectedSlot === slot
+                    selectedTime === slot
                       ? theme.palette.primary.main
                       : "transparent",
-                  borderColor: selectedSlot === slot ? "#EFFFE3" : "#E7E9EB",
-                  color: selectedSlot === slot ? "#FFFFFF" : "#2C2D2C",
+                  borderColor: selectedTime === slot ? "#EFFFE3" : "#E7E9EB",
+                  color: selectedTime === slot ? "#FFFFFF" : "#2C2D2C",
                   "&:hover": {
                     backgroundColor:
-                      selectedSlot === slot
+                      selectedTime === slot
                         ? theme.palette.primary.main
                         : "#E3E3E3",
-                    color: selectedSlot === slot ? "#FFFFFF" : "#000000",
-                    borderColor: selectedSlot === slot ? "#EFFFE3" : "#C5C9C5",
+                    color: selectedTime === slot ? "#FFFFFF" : "#000000",
+                    borderColor: selectedTime === slot ? "#EFFFE3" : "#C5C9C5",
                   },
                 }}
               >
@@ -119,6 +134,20 @@ const TimeSlotsComponent: React.FC = () => {
           ))}
         </Grid>
       </Box>
+
+      {hasError && errorMessage && (
+        <Typography
+          variant="body2"
+          sx={{
+            color: "#d32f2f",
+            fontSize: "12px",
+            mt: 1,
+            ml: 1,
+          }}
+        >
+          {errorMessage}
+        </Typography>
+      )}
     </Paper>
   );
 };

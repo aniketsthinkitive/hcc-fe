@@ -13,8 +13,42 @@ import NoteComponent from "../components/NoteComponent";
 import TimeSlotsComponent from "../components/TimeSlotsComponent";
 import DateMonth from "../../../components/date-month/date-month";
 import theme from "../../../constant/styles/theme";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import type { Dayjs } from "dayjs";
+
+const appointmentSchema = yup.object({
+  selectedDate: yup.mixed<Dayjs>().required("Please select a date"),
+  selectedTime: yup.string().required("Please select a time slot"),
+});
+
+interface AppointmentFormData {
+  selectedDate?: string | null;
+  selectedTime?: string | null;
+}
 
 const IntakeAppointmentPage: React.FC = () => {
+  const initialValues = {
+    selectedDate: null,
+    selectedTime: null,
+  };
+
+  const {
+    control,
+    handleSubmit,
+    // watch,
+    // setValue,
+    formState: { errors, isValid },
+  } = useForm<AppointmentFormData>({
+    resolver: yupResolver(appointmentSchema),
+    defaultValues: initialValues,
+  });
+
+  const onSubmit = (data: AppointmentFormData) => {
+    console.log("Form submitted:", data, errors);
+  };
+
   return (
     <Box
       sx={{
@@ -160,52 +194,80 @@ const IntakeAppointmentPage: React.FC = () => {
               </Box>
 
               {/* Main Content */}
-              <Box sx={{ p: 3, minHeight: "500px" }}>
-                <Grid container spacing={3}>
-                  {/* Left Column - Note */}
-                  <Grid size={{ xs: 12, md: 4, lg: 3 }}>
-                    <NoteComponent />
-                  </Grid>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Box sx={{ p: 3, minHeight: "500px" }}>
+                  <Grid container spacing={3}>
+                    {/* Left Column - Note */}
+                    <Grid size={{ xs: 12, md: 4, lg: 3 }}>
+                      <NoteComponent />
+                    </Grid>
 
-                  {/* Middle Column - Calendar */}
-                  <Grid size={{ xs: 12, md: 4, lg: 5 }}>
-                    <DateMonth onChange={() => {}} disablePast />
-                  </Grid>
+                    {/* Middle Column - Calendar */}
+                    <Grid size={{ xs: 12, md: 4, lg: 5 }}>
+                      {/* <DateMonth onChange={() => {}} disablePast /> */}
+                      <Controller
+                        name="selectedDate"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                          <DateMonth
+                            // value={field.value}
+                            onChange={field.onChange}
+                            disablePast
+                            hasError={!!fieldState.error}
+                            errorMessage={fieldState.error?.message}
+                          />
+                        )}
+                      />
+                    </Grid>
 
-                  {/* Right Column - Time Slots */}
-                  <Grid size={{ xs: 12, md: 4, lg: 4 }}>
-                    <TimeSlotsComponent />
+                    {/* Right Column - Time Slots */}
+                    <Grid size={{ xs: 12, md: 4, lg: 4 }}>
+                      <Controller
+                        name="selectedTime"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                          <TimeSlotsComponent
+                            selectedTime={field.value}
+                            onTimeSelect={field.onChange}
+                            hasError={!!fieldState.error}
+                            errorMessage={fieldState.error?.message}
+                          />
+                        )}
+                      />
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Box>
+                </Box>
 
-              {/* Footer Actions */}
-              <Box
-                sx={{
-                  p: 3,
-                  borderTop: "1px solid #E7E9EB",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  gap: 2,
-                  flexWrap: "wrap",
-                }}
-              >
-                <Button
-                  variant="contained"
-                  endIcon={<ArrowForward />}
+                {/* Footer Actions */}
+                <Box
                   sx={{
-                    backgroundColor: theme.palette.primary.main,
-                    color: "#FFFFFF",
-                    "&:disabled": {
-                      backgroundColor: "#DDE0DD",
-                      color: "#A9ACA9",
-                    },
+                    p: 3,
+                    borderTop: "1px solid #E7E9EB",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                    gap: 2,
+                    flexWrap: "wrap",
                   }}
                 >
-                  Proceed With Payment
-                </Button>
-              </Box>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    endIcon={<ArrowForward />}
+                    disabled={!isValid}
+                    sx={{
+                      backgroundColor: theme.palette.primary.main,
+                      color: "#FFFFFF",
+                      "&:disabled": {
+                        backgroundColor: "#DDE0DD",
+                        color: "#A9ACA9",
+                      },
+                    }}
+                  >
+                    Proceed With Payment
+                  </Button>
+                </Box>
+              </form>
             </Paper>
           </Grid>
         </Grid>
