@@ -20,7 +20,7 @@ interface CustomSelectProps {
     value: string;
     label: string;
     disabled?: boolean;
-    child?: JSX.Element;
+    child?: React.ReactElement;
   }[];
   onChange: (e: SelectChangeEvent<string>) => void;
   hasError?: boolean;
@@ -29,6 +29,7 @@ interface CustomSelectProps {
   isDisabled?: boolean;
   bgWhite?: boolean;
   enableDeselect?: boolean;
+  height?: string | number; // Added height prop for flexibility
   menuProps?: {
     PaperProps?: {
       style?: {
@@ -40,7 +41,7 @@ interface CustomSelectProps {
 }
 
 function CustomSelect(props: CustomSelectProps) {
-  const { items, bgWhite, enableDeselect } = props;
+  const { items, bgWhite, enableDeselect, height } = props;
 
   const handleValue = (e: SelectChangeEvent<string>) => {
     const selectedLabel = e.target.value;
@@ -66,6 +67,7 @@ function CustomSelect(props: CustomSelectProps) {
           borderWidth: "0.5px",
           backgroundColor: bgWhite === true ? "inherit" : "white",
           borderColor: "#F1F1F1",
+          ...(height && { height }), // Apply custom height when provided
         }}
         displayEmpty
         name={props?.name}
@@ -74,7 +76,7 @@ function CustomSelect(props: CustomSelectProps) {
         error={props.hasError}
         renderValue={(selected) => (
           <Typography
-            variant="buttonLinkAndField3"
+            variant="body2"
             className={`${customSelectStyles.headerLabel}`}
             sx={{
               color: selected

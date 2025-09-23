@@ -1,7 +1,9 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-// Import page components
+
+// Import Client layout and pages
+import EnrollPage from "../features/enroll/pages/EnrollPage";
 import { LoginPage as ClientLoginPage } from "../features/auth/pages/Client/LoginPage";
 import { LoginPage as ClinicianLoginPage } from "../features/auth/pages/Clinician/LoginPage";
 import { SetPassword as ClientSetPassword } from "../features/auth/pages/Client/SetPassword";
@@ -32,6 +34,9 @@ const AppRoutes: React.FC = () => {
 
       {/* Test Page - Main page for testing components */}
       <Route path="/test" element={<TestPage />} />
+
+      {/* Enroll  Page */}
+      <Route path="/enroll" element={<EnrollPage />} />
 
       {/* Login Pages */}
       <Route path="/login" element={<ClientLoginPage />} />
