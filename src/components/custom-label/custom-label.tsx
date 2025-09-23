@@ -8,21 +8,27 @@ interface CustomFormLabelProps {
   style?: React.CSSProperties;
 }
 
-const CustomLabel = React.memo<CustomFormLabelProps>(({ label, isRequired, style }) => {
-  return (
-    <Box mb={1} sx={style}>
-      <Typography
-        variant="body1"
-        sx={{
-          letterSpacing: "inherit",
-        }}
-      >
-        {label}
-        {isRequired && <span style={customLabelStyles.required}>*</span>}
-      </Typography>
-    </Box>
-  );
-});
+const CustomLabel = React.memo<CustomFormLabelProps>(
+  ({ label, isRequired, style }) => {
+    return (
+      <Box mb={1} sx={style}>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            letterSpacing: "inherit",
+            fontSize: "14px",
+            fontFamily: "Helvetica Neue, Arial, sans-serif",
+            fontWeight: 500,
+            color: "#1A1A1A",
+          }}
+        >
+          {label}
+          {isRequired && <span style={customLabelStyles.required}>*</span>}
+        </Typography>
+      </Box>
+    );
+  },
+);
 
 CustomLabel.displayName = "CustomLabel";
 

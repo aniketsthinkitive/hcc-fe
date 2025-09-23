@@ -12,15 +12,15 @@ export const customSelectStyles = {
 };
 
 export const selectInputStyle = {
-  ".MuiOutlinedInput-notchedOutline":  {
-    border: "1px solid #ccc" /* 1px solid light grey border */
+  ".MuiOutlinedInput-notchedOutline": {
+    border: "1px solid #ccc" /* 1px solid light grey border */,
   },
   //border: `0px solid ${theme.palette.grey[400]}`,
-  height: "40px",
+  height: "44px", // Updated from 40px to match CustomInput height
   width: "100%",
   borderRadius: "4px",
   //boxShadow: "0 0 6px 0 rgba(10, 10, 10, 10 )",
-  
+
   ".css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input": {
     display: "flex",
     alignItems: "center",
@@ -37,7 +37,7 @@ export const selectInputStyle = {
 export const someStyle = {
   ".MuiOutlinedInput-notchedOutline": { border: 0 },
   border: `1px solid ${theme.palette.grey[400]}`,
-  height: "40px !important",
+  height: "48px !important", // Updated from 40px to match CustomInput height
   width: "100%",
   borderRadius: "8px",
   ".Mui-readOnly": {
