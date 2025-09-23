@@ -27,6 +27,7 @@ import {
   avatarCss,
   tableContainerCss,
 } from './widgets/common-table-widgets';
+import TableSkeleton from './TableSkeleton';
 
 interface ClientData {
   id: string;
@@ -117,9 +118,15 @@ const EnhancedTableTemplate: React.FC<EnhancedTableProps> = ({
   loading: externalLoading = false,
 }) => {
   const [data, setData] = useState<ClientData[]>(initialData);
-  const [loading] = useState(externalLoading);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [allSelected, setAllSelected] = useState(false);
+
+  // Use external loading state and update data when initialData changes
+  React.useEffect(() => {
+    if (!externalLoading) {
+      setData(initialData);
+    }
+  }, [initialData, externalLoading]);
 
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -168,6 +175,21 @@ const EnhancedTableTemplate: React.FC<EnhancedTableProps> = ({
       .slice(0, 2);
   };
 
+  // Show skeleton loader when loading
+  if (externalLoading) {
+    return (
+      <Paper sx={{ overflow: 'hidden' }}>
+        <TableSkeleton 
+          headers={tableHeaders}
+          rowCount={5}
+          hasCheckbox={true}
+          hasAvatar={true}
+          hasActions={true}
+        />
+      </Paper>
+    );
+  }
+
   return (
     <Paper sx={{ overflow: 'hidden' }}>
       <TableContainer sx={tableContainerCss}>
@@ -210,9 +232,7 @@ const EnhancedTableTemplate: React.FC<EnhancedTableProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? (
-              "loading"
-            ) : data.length === 0 ? (
+            {data.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={tableHeaders.length} align="center">
                   <Typography

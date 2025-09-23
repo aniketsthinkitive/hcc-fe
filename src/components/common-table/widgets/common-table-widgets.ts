@@ -173,3 +173,18 @@ export const tableContainerCss = {
     },
   },
 };
+
+// Skeleton loading styles
+export const skeletonRowCss = {
+  "&:hover": {
+    backgroundColor: "transparent !important", // Disable hover effect during loading
+  },
+};
+
+export const skeletonCellCss = {
+  ...heading,
+  [`&.${tableCellClasses.body}`]: {
+    padding: "12px 24px",
+    borderBottom: "1px solid #F2F2F2",
+  },
+};
