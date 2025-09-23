@@ -30,6 +30,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../features/auth/hooks/useAuth';
+import { AdminDropdown } from '../../features/admin/components';
 import logo from '../../assets/images/logo.svg?url';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
@@ -65,6 +66,7 @@ const CommonNavbar: React.FC<CommonNavbarProps> = ({ onDrawerToggle }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [navMenuAnchor, setNavMenuAnchor] = useState<null | HTMLElement>(null);
+  const [adminMenuAnchor, setAdminMenuAnchor] = useState<null | HTMLElement>(null);
 
   // Navigation items configuration - Updated for counseling system
   const navItems: NavItem[] = [
@@ -102,6 +104,11 @@ const CommonNavbar: React.FC<CommonNavbarProps> = ({ onDrawerToggle }) => {
     }
   };
 
+  const handleAdminClick = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    handleAdminMenuOpen(event);
+  };
+
   const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -116,6 +123,14 @@ const CommonNavbar: React.FC<CommonNavbarProps> = ({ onDrawerToggle }) => {
 
   const handleNavMenuClose = () => {
     setNavMenuAnchor(null);
+  };
+
+  const handleAdminMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAdminMenuAnchor(event.currentTarget);
+  };
+
+  const handleAdminMenuClose = () => {
+    setAdminMenuAnchor(null);
   };
 
   const handleLogout = async () => {
@@ -212,7 +227,7 @@ const CommonNavbar: React.FC<CommonNavbarProps> = ({ onDrawerToggle }) => {
               {filteredNavItems.slice(0, isTablet ? 5 : filteredNavItems.length).map((item) => (
                 <Button
                   key={item.path}
-                  onClick={() => handleNavigation(item.path)}
+                  onClick={item.label === 'Admin' ? handleAdminClick : () => handleNavigation(item.path)}
                   startIcon={item.icon}
                   sx={{
                     color: isActiveRoute(item.path) ? theme.palette.primary.main : theme.palette.text.primary,
@@ -609,6 +624,13 @@ const CommonNavbar: React.FC<CommonNavbarProps> = ({ onDrawerToggle }) => {
           </List>
         </Box>
       </Drawer>
+
+      {/* Admin Dropdown */}
+      <AdminDropdown
+        anchorEl={adminMenuAnchor}
+        open={Boolean(adminMenuAnchor)}
+        onClose={handleAdminMenuClose}
+      />
 
     </>
   );
