@@ -23,6 +23,7 @@ import ReferralPage from "../features/referral/pages/ReferralPage";
 import ReportsPage from "../features/reports/pages/ReportsPage";
 import FormPage from "../features/forms/pages/FormPage";
 import AdminPage from "../features/admin/pages/AdminPage";
+import AllOrganizations from "../features/admin/pages/AllOrganizations";
 import IntakeAppointmentPage from "../features/appointment/pages/IntakeAppointmentPage";
 import IntakeAppointmentSuccessPage from "../features/appointment/pages/IntakeAppointmentSuccessPage";
 
@@ -64,6 +65,7 @@ const AppRoutes: React.FC = () => {
         path="/intake-appointment-success"
         element={<IntakeAppointmentSuccessPage />}
       />
+
       {/* Admin Routes with Layout */}
       <Route path="/admin" element={<AdminLayout />}>
         {/* Default admin route - redirect to dashboard */}
@@ -98,6 +100,8 @@ const AppRoutes: React.FC = () => {
 
         {/* Admin Settings */}
         <Route path="settings" element={<AdminPage />} />
+
+        <Route path="/admin/organizations" element={<AllOrganizations />} />
 
         {/* Profile */}
         <Route path="profile" element={<div>Profile Page - Coming Soon</div>} />
