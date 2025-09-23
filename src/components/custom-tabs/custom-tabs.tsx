@@ -47,11 +47,12 @@ export default function CustomTabs({
   contentSx
 }: CustomTabsProps) {
   const [internalActiveTab, setInternalActiveTab] = useState<string>(
-    activeTab || tabs[0]?.id || ''
+    tabs[0]?.id || ''
   );
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [focusedTab, setFocusedTab] = useState<string | null>(null);
 
+  // Use external activeTab if provided, otherwise use internal state
   const currentActiveTab = activeTab !== undefined ? activeTab : internalActiveTab;
   const styles = getTabStyles(type, size, fullWidth);
 
@@ -60,7 +61,7 @@ export default function CustomTabs({
     
     const tab = tabs.find(t => t.id === tabId);
     if (tab?.disabled) return;
-
+    
     if (onTabChange) {
       onTabChange(tabId);
     } else {
@@ -98,14 +99,15 @@ export default function CustomTabs({
     if (disabled || tabs.find(t => t.id === tabId)?.disabled) {
       return 'default';
     }
+    // Prioritize active state over hover and focus
+    if (currentActiveTab === tabId) {
+      return 'active';
+    }
     if (focusedTab === tabId) {
       return 'focus';
     }
     if (hoveredTab === tabId) {
       return 'hover';
-    }
-    if (currentActiveTab === tabId) {
-      return 'active';
     }
     return 'default';
   };
@@ -120,7 +122,15 @@ export default function CustomTabs({
 
     switch (state) {
       case 'active':
-        return { ...styles.tab, ...styles.tabActive };
+        // Force active styles
+        return { 
+          ...styles.tab, 
+          ...styles.tabActive,
+          backgroundColor: '#FFFFFF',
+          color: '#439322',
+          fontWeight: 600,
+          boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.06), 0px 1px 3px 0px rgba(16, 23, 40, 0.1)'
+        };
       case 'hover':
         return { ...styles.tab, ...styles.tabHover };
       case 'focus':

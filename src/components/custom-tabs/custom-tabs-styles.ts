@@ -3,6 +3,7 @@ export type TabType =
   | 'button-gray' 
   | 'button-white-border' 
   | 'button-white-border-icon-only'
+  | 'button-white-border-figma'
   | 'underline' 
   | 'underline-filled';
 
@@ -70,6 +71,7 @@ export const getTabStyles = (type: TabType, size: TabSize, fullWidth: boolean = 
     flex: fullWidth ? 1 : 'none',
     whiteSpace: 'nowrap',
   };
+
 
   // Type-specific styles
   const typeStyles = {
@@ -169,6 +171,44 @@ export const getTabStyles = (type: TabType, size: TabSize, fullWidth: boolean = 
         color: '#2C2D2C',
         border: '1px solid #439322',
         boxShadow: '0 0 0 2px rgba(67, 147, 34, 0.2)',
+      }
+    },
+    'button-white-border-figma': {
+      default: {
+        ...baseTab,
+        backgroundColor: 'transparent',
+        color: '#424342', // Neutral/70
+        border: 'none',
+        borderRadius: '12px',
+        padding: '8px 16px', // Increased padding for longer tabs
+        minHeight: '32px',
+        minWidth: '60px', // Increased minimum width for longer tabs
+        fontFamily: '"Inter", "Helvetica Neue", sans-serif',
+        fontSize: '14px',
+        lineHeight: '1.2',
+        fontWeight: 500, // Increased font weight
+      },
+      active: {
+        backgroundColor: '#FFFFFF !important',
+        color: '#439322 !important', // Primary/70 (Main)
+        border: 'none !important',
+        borderRadius: '12px',
+        boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.06), 0px 1px 3px 0px rgba(16, 23, 40, 0.1) !important',
+        fontFamily: '"Inter", "Helvetica Neue", sans-serif',
+        fontSize: '14px',
+        lineHeight: '1.2',
+        fontWeight: '600 !important', // Increased font weight for active state
+      },
+      hover: {
+        backgroundColor: 'transparent',
+        color: '#424342', // Neutral/70
+        border: 'none',
+      },
+      focus: {
+        backgroundColor: 'transparent',
+        color: '#424342',
+        border: 'none',
+        boxShadow: 'none',
       }
     },
     'underline': {
@@ -319,6 +359,134 @@ export const getTabStyles = (type: TabType, size: TabSize, fullWidth: boolean = 
       height: '2px',
       backgroundColor: '#439322', // Primary Green
     }
+  };
+
+  // Special handling for button-white-border-figma type
+  if (type === 'button-white-border-figma') {
+    const figmaStyles = typeStyles['button-white-border-figma'];
+    return {
+      container: customTabsStyles.tabsContainer,
+      tab: figmaStyles.default,
+      tabActive: figmaStyles.active,
+      tabHover: figmaStyles.hover,
+      tabFocus: figmaStyles.focus,
+      tabDisabled: figmaStyles.default,
+      tabText: {
+        fontFamily: baseFontFamily,
+        fontSize: currentSize.fontSize,
+        lineHeight: currentSize.lineHeight,
+        fontWeight: 500,
+        color: 'inherit',
+      },
+      tabTextActive: {
+        fontFamily: baseFontFamily,
+        fontSize: currentSize.fontSize,
+        lineHeight: currentSize.lineHeight,
+        fontWeight: 600,
+        color: 'inherit',
+      },
+      tabTextDisabled: {
+        fontFamily: baseFontFamily,
+        fontSize: currentSize.fontSize,
+        lineHeight: currentSize.lineHeight,
+        fontWeight: 400,
+        color: 'inherit',
+        opacity: 0.5,
+      },
+      badge: {
+        backgroundColor: '#F2F2F2',
+        color: '#2C2D2C',
+        borderRadius: '12px',
+        padding: '2px 8px',
+        fontSize: '12px',
+        fontWeight: 500,
+        minWidth: '20px',
+        textAlign: 'center',
+      },
+      badgeActive: {
+        backgroundColor: '#439322',
+        color: '#FFFFFF',
+        borderRadius: '12px',
+        padding: '2px 8px',
+        fontSize: '12px',
+        fontWeight: 500,
+        minWidth: '20px',
+        textAlign: 'center',
+      },
+      underline: {
+        height: '2px',
+        backgroundColor: 'transparent',
+        borderRadius: '1px',
+      },
+      underlineActive: {
+        height: '2px',
+        backgroundColor: '#439322',
+        borderRadius: '1px',
+      },
+    };
+  }
+
+  // Return styles for regular types
+  const regularTypeStyles = typeStyles[type];
+  return {
+    container: customTabsStyles.tabsContainer,
+    tab: { ...baseTab, ...regularTypeStyles.default },
+    tabActive: { ...baseTab, ...regularTypeStyles.active },
+    tabHover: { ...baseTab, ...regularTypeStyles.hover },
+    tabFocus: { ...baseTab, ...regularTypeStyles.focus },
+    tabDisabled: { ...baseTab, ...regularTypeStyles.default, opacity: 0.5, cursor: 'not-allowed' },
+    tabText: {
+      fontFamily: baseFontFamily,
+      fontSize: currentSize.fontSize,
+      lineHeight: currentSize.lineHeight,
+      fontWeight: 500,
+      color: 'inherit',
+    },
+    tabTextActive: {
+      fontFamily: baseFontFamily,
+      fontSize: currentSize.fontSize,
+      lineHeight: currentSize.lineHeight,
+      fontWeight: 600,
+      color: 'inherit',
+    },
+    tabTextDisabled: {
+      fontFamily: baseFontFamily,
+      fontSize: currentSize.fontSize,
+      lineHeight: currentSize.lineHeight,
+      fontWeight: 400,
+      color: 'inherit',
+      opacity: 0.5,
+    },
+    badge: {
+      backgroundColor: '#F2F2F2',
+      color: '#2C2D2C',
+      borderRadius: '12px',
+      padding: '2px 8px',
+      fontSize: '12px',
+      fontWeight: 500,
+      minWidth: '20px',
+      textAlign: 'center',
+    },
+    badgeActive: {
+      backgroundColor: '#439322',
+      color: '#FFFFFF',
+      borderRadius: '12px',
+      padding: '2px 8px',
+      fontSize: '12px',
+      fontWeight: 500,
+      minWidth: '20px',
+      textAlign: 'center',
+    },
+    underline: {
+      height: '2px',
+      backgroundColor: 'transparent',
+      borderRadius: '1px',
+    },
+    underlineActive: {
+      height: '2px',
+      backgroundColor: '#439322',
+      borderRadius: '1px',
+    },
   };
 };
 

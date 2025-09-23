@@ -13,7 +13,6 @@ import TestPage from '../pages/TestPage';
 import AdminLayout from '../layout/AdminLayout';
 import DashboardPage from '../features/dashboard/pages/DashboardPage';
 import SchedulingPage from '../features/scheduling/pages/SchedulingPage';
-import ClientPage from '../features/clients/pages/ClientPage';
 import GroupsPage from '../features/groups/pages/GroupsPage';
 import TreatmentsPage from '../features/treatments/pages/TreatmentsPage';
 import BillingPage from '../features/billing/pages/BillingPage';
@@ -21,6 +20,7 @@ import ReferralPage from '../features/referral/pages/ReferralPage';
 import ReportsPage from '../features/reports/pages/ReportsPage';
 import FormPage from '../features/forms/pages/FormPage';
 import AdminPage from '../features/admin/pages/AdminPage';
+import ClientListPage from '../features/clients/pages/ClientListPage';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -54,7 +54,7 @@ const AppRoutes: React.FC = () => {
         <Route path="scheduling" element={<SchedulingPage />} />
         
         {/* Clients */}
-        <Route path="clients" element={<ClientPage />} />
+        <Route path="clients" element={<ClientListPage />} />
         
         {/* Groups */}
         <Route path="groups" element={<GroupsPage />} />
