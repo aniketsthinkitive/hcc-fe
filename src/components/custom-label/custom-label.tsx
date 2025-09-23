@@ -19,7 +19,7 @@ const CustomLabel = React.memo<CustomFormLabelProps>(
             fontSize: "14px",
             fontFamily: "Helvetica Neue, Arial, sans-serif",
             fontWeight: 500,
-            color: "#1A1A1A",
+            color: customLabelStyles.headerLabel.color,
           }}
         >
           {label}

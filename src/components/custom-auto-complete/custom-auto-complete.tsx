@@ -5,7 +5,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent, SyntheticEvent } from "react";
 import { useDebounce } from "use-debounce";
 
 import SearchIcon from "@mui/icons-material/Search";

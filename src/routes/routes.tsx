@@ -25,6 +25,7 @@ import FormPage from "../features/forms/pages/FormPage";
 import AdminPage from "../features/admin/pages/AdminPage";
 import IntakeAppointmentPage from "../features/appointment/pages/IntakeAppointmentPage";
 import IntakeAppointmentSuccessPage from "../features/appointment/pages/IntakeAppointmentSuccessPage";
+import OfficeInformationPage from "../features/admin/pages/OfficeInformationPage";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -99,6 +100,7 @@ const AppRoutes: React.FC = () => {
         {/* Admin Settings */}
         <Route path="settings" element={<AdminPage />} />
 
+        <Route path="office-information" element={<OfficeInformationPage />} />
         {/* Profile */}
         <Route path="profile" element={<div>Profile Page - Coming Soon</div>} />
       </Route>
