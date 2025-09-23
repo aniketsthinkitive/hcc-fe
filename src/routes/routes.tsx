@@ -24,6 +24,7 @@ import ReportsPage from "../features/reports/pages/ReportsPage";
 import FormPage from "../features/forms/pages/FormPage";
 import AdminPage from "../features/admin/pages/AdminPage";
 import RolesPermissionsList from "../features/admin/pages/Roles&PermissionsList";
+import AllOrganizations from "../features/admin/pages/AllOrganizations";
 import IntakeAppointmentPage from "../features/appointment/pages/IntakeAppointmentPage";
 import IntakeAppointmentSuccessPage from "../features/appointment/pages/IntakeAppointmentSuccessPage";
 import OfficeInformationPage from "../features/admin/pages/OfficeInformationPage";
@@ -67,6 +68,7 @@ const AppRoutes: React.FC = () => {
         path="/intake-appointment-success"
         element={<IntakeAppointmentSuccessPage />}
       />
+
       {/* Admin Routes with Layout */}
       <Route path="/admin" element={<AdminLayout />}>
         {/* Default admin route - redirect to dashboard */}
@@ -97,6 +99,8 @@ const AppRoutes: React.FC = () => {
         <Route path="discharge-reasons" element={<CancellationChargePage />} />
         {/* Roles & Permissions */}
         <Route path="roles-permissions" element={<RolesPermissionsList />} />
+        {/* Organizations */}
+        <Route path="organizations" element={<AllOrganizations />} />
         {/* Profile */}
         <Route path="profile" element={<div>Profile Page - Coming Soon</div>} />
       </Route>
