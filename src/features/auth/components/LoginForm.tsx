@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Link,
@@ -40,10 +42,12 @@ interface LoginFormProps {
 export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const { login, isLoading, error, clearAuthError } = useAuth();
   const [formError, setFormError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const {
     control,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = useForm<LoginFormData>({
     resolver: yupResolver(loginSchema),
@@ -78,8 +82,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   };
 
   const handleForgotPassword = () => {
-    // TODO: Implement forgot password functionality
-    console.log('Forgot password clicked');
+    // Get the current email value from the form
+    const currentEmail = watch('email') || '';
+    
+    // Navigate to forgot password page with email in state
+    navigate('/clinician/forgot-password', {
+      state: { email: currentEmail }
+    });
   };
 
   const displayError = formError || error;

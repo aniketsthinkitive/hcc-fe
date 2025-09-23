@@ -15,6 +15,11 @@ export interface EmailPasswordCredentials {
   rememberMe?: boolean;
 }
 
+export interface SetPasswordCredentials {
+  password: string;
+  confirmPassword: string;
+}
+
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
