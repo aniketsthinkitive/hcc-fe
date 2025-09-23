@@ -94,7 +94,7 @@ const Paginator = (props: PaginatorProps) => {
             )}
             <Box sx={paginationMainStyles}>
               <Pagination
-                page={page + 1}
+                page={page}
                 count={totalPages}
                 variant="text"
                 shape="rounded"

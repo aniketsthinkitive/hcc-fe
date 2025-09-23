@@ -8,7 +8,7 @@ export const paginatorContainerStyles: SxProps<Theme> = {
   alignItems: "center",
   width: "100%",
   padding: "12px 16px 12px 16px",
-  borderTop: `1px solid #E7E9EB`,
+  // borderTop: `1px solid #E7E9EB`,
   borderRadius: "0px 0px 10px 10px",
   backgroundColor: theme.palette.common.white,
   gap: "16px",
