@@ -27,6 +27,7 @@ import RolesPermissionsList from "../features/admin/pages/Roles&PermissionsList"
 import IntakeAppointmentPage from "../features/appointment/pages/IntakeAppointmentPage";
 import IntakeAppointmentSuccessPage from "../features/appointment/pages/IntakeAppointmentSuccessPage";
 import OfficeInformationPage from "../features/admin/pages/OfficeInformationPage";
+import CancellationChargePage from "../features/admin/pages/CancellationChargePage";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -70,41 +71,32 @@ const AppRoutes: React.FC = () => {
       <Route path="/admin" element={<AdminLayout />}>
         {/* Default admin route - redirect to dashboard */}
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
-
         {/* Dashboard */}
         <Route path="dashboard" element={<DashboardPage />} />
-
         {/* Scheduling */}
         <Route path="scheduling" element={<SchedulingPage />} />
-
         {/* Clients */}
         <Route path="clients" element={<ClientPage />} />
-
         {/* Groups */}
         <Route path="groups" element={<GroupsPage />} />
-
         {/* Treatments */}
         <Route path="treatments" element={<TreatmentsPage />} />
-
         {/* Billing */}
         <Route path="billing" element={<BillingPage />} />
-
         {/* Referral */}
         <Route path="referral" element={<ReferralPage />} />
-
         {/* Reports */}
         <Route path="reports" element={<ReportsPage />} />
-
         {/* Forms */}
         <Route path="forms" element={<FormPage />} />
-
         {/* Admin Settings */}
         <Route path="settings" element={<AdminPage />} />
 
         <Route path="office-information" element={<OfficeInformationPage />} />
+
+        <Route path="discharge-reasons" element={<CancellationChargePage />} />
         {/* Roles & Permissions */}
         <Route path="roles-permissions" element={<RolesPermissionsList />} />
-
         {/* Profile */}
         <Route path="profile" element={<div>Profile Page - Coming Soon</div>} />
       </Route>
