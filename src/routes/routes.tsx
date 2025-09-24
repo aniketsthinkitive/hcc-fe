@@ -24,6 +24,7 @@ import ReportsPage from "../features/reports/pages/ReportsPage";
 import FormPage from "../features/forms/pages/FormPage";
 import AdminPage from "../features/admin/pages/AdminPage";
 import RolesPermissionsList from "../features/admin/pages/Roles&PermissionsList";
+import UserManagementList from "../features/admin/pages/UserManagementList";
 import IntakeAppointmentPage from "../features/appointment/pages/IntakeAppointmentPage";
 import IntakeAppointmentSuccessPage from "../features/appointment/pages/IntakeAppointmentSuccessPage";
 
@@ -102,6 +103,9 @@ const AppRoutes: React.FC = () => {
 
         {/* Roles & Permissions */}
         <Route path="roles-permissions" element={<RolesPermissionsList />} />
+
+        {/* User Management */}
+        <Route path="user-management" element={<UserManagementList />} />
 
         {/* Profile */}
         <Route path="profile" element={<div>Profile Page - Coming Soon</div>} />
