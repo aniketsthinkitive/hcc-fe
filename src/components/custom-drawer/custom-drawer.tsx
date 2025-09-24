@@ -5,6 +5,7 @@ import {
   IconButton,
   Typography,
   useMediaQuery,
+  Box,
 } from "@mui/material";
 import { drawerHeader, gridHeader } from "./custom-drawer.widgets";
 import theme from "../../constant/styles/theme";
@@ -26,7 +27,28 @@ const CustomDrawer = (props: React.PropsWithChildren<DrawerProps>) => {
   const below768 = useMediaQuery("(max-width:768px)");
 
   return (
-    <Drawer anchor={props.anchor} open={props.open}>
+    <Drawer 
+      anchor={props.anchor} 
+      open={props.open}
+      variant="temporary"
+      ModalProps={{
+        keepMounted: true, // Better open performance on mobile.
+      }}
+      sx={{
+        zIndex: 1400, // Higher than AppBar z-index (theme.zIndex.drawer + 1 = 1201)
+        '& .MuiDrawer-paper': {
+          zIndex: 1400,
+          position: 'fixed',
+          top: 0,
+          height: '100vh',
+          width: props.anchor === 'right' || props.anchor === 'left' ? 
+            (props.drawerWidth || (belowLg ? '50vw' : '40vw')) : 'auto',
+        },
+        '& .MuiBackdrop-root': {
+          zIndex: 1399, // Slightly lower than drawer but higher than AppBar
+        }
+      }}
+    >
       <Grid
         container
         flexDirection={"column"}
@@ -37,12 +59,22 @@ const CustomDrawer = (props: React.PropsWithChildren<DrawerProps>) => {
         {props.title && (
           <Grid
             container
-            alignItems="center"
-            sx={gridHeader}
-            mt={props.headerStyle}
+            sx={{
+              ...gridHeader,
+              alignItems: "center",
+              mt: props.headerStyle,
+            }}
           >
             <Grid>
-              <Typography sx={drawerHeader} variant="h6">
+              <Typography 
+                sx={{
+                  ...drawerHeader,
+                  fontSize: "1.25rem",
+                  lineHeight: 1.6,
+                  letterSpacing: "0.0075em",
+                  fontWeight: 600,
+                }}
+              >
                 {props.title}
               </Typography>
             </Grid>
@@ -53,11 +85,10 @@ const CustomDrawer = (props: React.PropsWithChildren<DrawerProps>) => {
             </Grid>
           </Grid>
         )}
-        <Grid
-          item
-          mt={2}
-          flex={1}
+        <Box
           sx={{
+            mt: 2,
+            flex: 1,
             width: drawerWidth ? drawerWidth : belowLg ? "50vw" : "40vw",
             paddingX: below768
               ? "15px"
@@ -68,7 +99,7 @@ const CustomDrawer = (props: React.PropsWithChildren<DrawerProps>) => {
           }}
         >
           {props.children}
-        </Grid>
+        </Box>
       </Grid>
     </Drawer>
   );

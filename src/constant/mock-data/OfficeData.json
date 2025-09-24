@@ -1,0 +1,52 @@
+[
+  {
+    "id": "1",
+    "office": "Main",
+    "city": "Denver",
+    "zipCode": "42574",
+    "phoneNumber": "(319) 555-0115",
+    "faxNumber": "0361-4567-8901",
+    "status": "inactive",
+    "address": "123 Main St, Denver, CO 80202"
+  },
+  {
+    "id": "2", 
+    "office": "Branch Office",
+    "city": "Colorado Springs",
+    "zipCode": "25138",
+    "phoneNumber": "(671) 555-0110",
+    "faxNumber": "022-6789-0123",
+    "status": "active",
+    "address": "456 Oak Ave, Colorado Springs, CO 80903"
+  },
+  {
+    "id": "3",
+    "office": "Satellite Office",
+    "city": "Boulder",
+    "zipCode": "85486", 
+    "phoneNumber": "(405) 555-0128",
+    "faxNumber": "0361-3456-7890",
+    "status": "inactive",
+    "address": "789 Pine Rd, Boulder, CO 80301"
+  },
+  {
+    "id": "4",
+    "office": "Downtown",
+    "city": "Denver",
+    "zipCode": "80202",
+    "phoneNumber": "(303) 555-0134",
+    "faxNumber": "0361-2345-6789",
+    "status": "active",
+    "address": "321 Downtown Blvd, Denver, CO 80202"
+  },
+  {
+    "id": "5",
+    "office": "Westside",
+    "city": "Lakewood",
+    "zipCode": "80226",
+    "phoneNumber": "(720) 555-0142",
+    "faxNumber": "0361-5678-9012",
+    "status": "active",
+    "address": "654 West Ave, Lakewood, CO 80226"
+  }
+]

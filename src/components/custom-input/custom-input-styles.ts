@@ -1,5 +1,7 @@
+import theme from "../../constant/styles/theme";
+
 export const errorStyle = {
-  color: "#CA1C1C", // Error Red from Figma
+  color: theme.palette.error.main, // Error Red from Figma
   fontSize: "12px",
   marginTop: "4px",
   fontFamily:
