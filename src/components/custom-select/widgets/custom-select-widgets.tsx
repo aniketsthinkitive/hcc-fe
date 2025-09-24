@@ -16,7 +16,7 @@ export const selectInputStyle = {
     border: "1px solid #ccc" /* 1px solid light grey border */,
   },
   //border: `0px solid ${theme.palette.grey[400]}`,
-  height: "44px", // Updated from 40px to match CustomInput height
+  height: "44px", // Matches button medium size height
   width: "100%",
   borderRadius: "4px",
   //boxShadow: "0 0 6px 0 rgba(10, 10, 10, 10 )",
@@ -37,7 +37,7 @@ export const selectInputStyle = {
 export const someStyle = {
   ".MuiOutlinedInput-notchedOutline": { border: 0 },
   border: `1px solid ${theme.palette.grey[400]}`,
-  height: "48px !important", // Updated from 40px to match CustomInput height
+  height: "44px !important", // Matches button medium size height
   width: "100%",
   borderRadius: "8px",
   ".Mui-readOnly": {
