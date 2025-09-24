@@ -1,5 +1,5 @@
 import { styled, TextareaAutosize, Typography } from "@mui/material";
-import { ChangeEvent } from "react";
+import type { ChangeEvent } from "react";
 import { errorStyle } from "../custom-input/custom-input-styles";
 import { editTextAreaStyle } from "./widgets/custom-textarea-widgets";
 
@@ -60,7 +60,14 @@ function CustomTextArea(props: CustomTextAreaProps) {
         // className={`${editTextAreaStyle.textArea} ${props.hasError ? editTextAreaStyle.errorMessage : ""}`}
         className={props.hasError ? `${editTextAreaStyle.errorMessage}` : ""}
       />
-      <ErrorTypography sx={{ ...errorStyle }} variant="caption">
+      <ErrorTypography 
+        sx={{ 
+          ...errorStyle,
+          fontSize: "0.75rem",
+          lineHeight: 1.66,
+          letterSpacing: "0.03333em",
+        }}
+      >
         {props.hasError ? props.errorMessage : ""}
       </ErrorTypography>
       {/* varient: caption */}

@@ -15,15 +15,81 @@ import {
 } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import type { OrganizationData } from '../types/organization.types';
-import {
-  tableContainerCss,
-  tableCellCss,
-  heading,
-  primaryTextCss,
-  actionMenuButtonCss,
-  actionMenuItemCss,
-  emptyStateCss,
-} from './widgets/organizations-table-styles';
+// Inline styles for the table component
+const tableContainerCss = {
+  maxHeight: 'calc(100vh - 300px)',
+  overflow: 'auto',
+  '&::-webkit-scrollbar': {
+    width: '6px',
+    height: '6px',
+  },
+  '&::-webkit-scrollbar-track': {
+    backgroundColor: '#F2F2F2',
+    borderRadius: '3px',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: '#C5C9C5',
+    borderRadius: '3px',
+    '&:hover': {
+      backgroundColor: '#A9ACA9',
+    },
+  },
+};
+
+const tableCellCss = {
+  borderBottom: '1px solid #E7E9EB',
+  padding: '12px 16px',
+  '&:last-child': {
+    paddingRight: '16px',
+  },
+};
+
+const heading = {
+  backgroundColor: '#F9FAF9',
+  borderBottom: '1px solid #E7E9EB',
+  padding: '12px 16px',
+  fontWeight: 500,
+  fontSize: '12px',
+  lineHeight: '1.2',
+  color: '#2C2D2C',
+  fontFamily: '"Helvetica Neue", Arial, sans-serif',
+};
+
+const primaryTextCss = {
+  fontSize: '14px',
+  fontWeight: 400,
+  lineHeight: '1.4',
+  color: '#2C2D2C',
+  fontFamily: '"Helvetica Neue", Arial, sans-serif',
+};
+
+const actionMenuButtonCss = {
+  minWidth: 'auto',
+  padding: '4px',
+  color: '#989998',
+  '&:hover': {
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    color: '#2C2D2C',
+  },
+};
+
+const actionMenuItemCss = {
+  fontSize: '14px',
+  fontWeight: 400,
+  color: '#2C2D2C',
+  padding: '8px 16px',
+  '&:hover': {
+    backgroundColor: 'rgba(67, 147, 34, 0.04)',
+  },
+};
+
+const emptyStateCss = {
+  padding: '40px 0',
+  color: '#989998',
+  fontSize: '14px',
+  textAlign: 'center',
+  fontFamily: '"Helvetica Neue", Arial, sans-serif',
+};
 
 // Component props
 interface OrganizationsTableProps {
