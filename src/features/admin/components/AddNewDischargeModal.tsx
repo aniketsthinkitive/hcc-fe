@@ -17,7 +17,7 @@ export interface CancellationChargeFormData {
   chargeName: string;
 }
 
-interface AddNewCancellationChargeModalProps {
+interface AddNewDischargeModalProps {
   open: boolean;
   isEdit?: boolean;
   initialData?: Partial<CancellationChargeFormData>;
@@ -25,7 +25,7 @@ interface AddNewCancellationChargeModalProps {
   onSubmit: (data: CancellationChargeFormData) => void;
 }
 
-const AddNewCancellationChargeModal: React.FC<AddNewCancellationChargeModalProps> = ({
+const AddNewDischargeModal: React.FC<AddNewDischargeModalProps> = ({
   open,
   isEdit = false,
   initialData,
@@ -77,7 +77,7 @@ const AddNewCancellationChargeModal: React.FC<AddNewCancellationChargeModalProps
     <CustomDialog
       open={open}
       onClose={handleCancel}
-      title={isEdit ? "Edit Cancellation Charge" : "Add New Cancellation Charge"}
+      title={isEdit ? "Edit Discharge status" : "Add Discharge status"}
       buttonName={[]}
       width="500px"
       height="auto"
@@ -105,9 +105,9 @@ const AddNewCancellationChargeModal: React.FC<AddNewCancellationChargeModalProps
                 gap: "8px",
               }}
             >
-              <CustomLabel label="Charge Name" isRequired />
+              <CustomLabel label="Discharge status" isRequired />
               <CustomInput
-                placeholder="Enter charge name"
+                placeholder="Enter discharge status"
                 name="chargeName"
                 value={field.value}
                 onChange={field.onChange}
@@ -140,4 +140,4 @@ const AddNewCancellationChargeModal: React.FC<AddNewCancellationChargeModalProps
   );
 };
 
-export default AddNewCancellationChargeModal;
+export default AddNewDischargeModal;

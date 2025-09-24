@@ -28,7 +28,7 @@ import RolesPermissionsList from "../features/admin/pages/Roles&PermissionsList"
 import IntakeAppointmentPage from "../features/appointment/pages/IntakeAppointmentPage";
 import IntakeAppointmentSuccessPage from "../features/appointment/pages/IntakeAppointmentSuccessPage";
 import OfficeInformationPage from "../features/admin/pages/OfficeInformationPage";
-import CancellationChargePage from "../features/admin/pages/CancellationChargePage";
+import DischargeStatusPage from "../features/admin/pages/DischargeStatusPage";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -97,7 +97,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/admin/organizations" element={<AllOrganizations />} />
         <Route path="office-information" element={<OfficeInformationPage />} />
 
-        <Route path="discharge-reasons" element={<CancellationChargePage />} />
+        <Route path="discharge-reasons" element={<DischargeStatusPage />} />
         {/* Roles & Permissions */}
         <Route path="roles-permissions" element={<RolesPermissionsList />} />
         {/* Profile */}

@@ -2,11 +2,11 @@ import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-interface CancellationChargeHeaderProps {
+interface DischargeStatusHeaderProps {
   onNewCharge?: () => void;
 }
 
-const CancellationChargeHeader: React.FC<CancellationChargeHeaderProps> = ({ 
+const DischargeStatusHeader: React.FC<DischargeStatusHeaderProps> = ({ 
   onNewCharge 
 }) => {
   return (
@@ -43,7 +43,7 @@ const CancellationChargeHeader: React.FC<CancellationChargeHeaderProps> = ({
               color: '#2C2D2C', // Neutral/80 from Figma
             }}
           >
-            Cancellation Charges
+             Discharge Reasons
           </Typography>
         </Box>
       </Box>
@@ -77,11 +77,11 @@ const CancellationChargeHeader: React.FC<CancellationChargeHeaderProps> = ({
             },
           }}
         >
-          New Charge
+          Discharge status
         </Button>
       </Box>
     </Box>
   );
 };
 
-export default CancellationChargeHeader;
+export default DischargeStatusHeader;

@@ -36,7 +36,7 @@ interface CancellationChargeData {
   lastModified: string;
 }
 
-interface CancellationChargeTableProps {
+interface DischargeStatusTableProps {
   data?: CancellationChargeData[];
   loading?: boolean;
   onStatusChange?: (chargeId: string, newStatus: 'active' | 'inactive') => void;
@@ -49,7 +49,7 @@ const tableHeaders = [
   { id: "actions", label: "Action", width: "100px" },
 ];
 
-const CancellationChargeTable: React.FC<CancellationChargeTableProps> = ({
+const DischargeStatusTable: React.FC<DischargeStatusTableProps> = ({
   data = [],
   loading = false,
   onEdit,
@@ -188,4 +188,4 @@ const CancellationChargeTable: React.FC<CancellationChargeTableProps> = ({
   );
 };
 
-export default CancellationChargeTable;
+export default DischargeStatusTable;

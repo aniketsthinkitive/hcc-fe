@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Box } from '@mui/material';
-import CancellationChargeTable from './CancellationChargeTable';
+import DischargeStatusTable from './DischargeStatusTable';
 import Paginator from '../../../components/pagination/pagination';
 import cancellationChargeData from '../../../constant/mock-data/CancellationChargeData.json';
 
@@ -15,13 +15,13 @@ interface CancellationChargeData {
   lastModified: string;
 }
 
-interface CancellationChargeTableWithPaginationProps {
+interface DischargeStatusTableWithPaginationProps {
   searchTerm?: string;
   loading?: boolean;
   onEdit?: (chargeId: string) => void;
 }
 
-const CancellationChargeTableWithPagination: React.FC<CancellationChargeTableWithPaginationProps> = ({
+const DischargeStatusTableWithPagination: React.FC<DischargeStatusTableWithPaginationProps> = ({
   searchTerm = '',
   loading = false,
   onEdit,
@@ -95,7 +95,7 @@ const CancellationChargeTableWithPagination: React.FC<CancellationChargeTableWit
           minHeight: 0, // Allow flex child to shrink
         }}
       >
-        <CancellationChargeTable
+        <DischargeStatusTable
           data={paginatedData}
           loading={loading}
           onStatusChange={handleStatusChange}
@@ -134,4 +134,4 @@ const CancellationChargeTableWithPagination: React.FC<CancellationChargeTableWit
   );
 };
 
-export default CancellationChargeTableWithPagination;
+export default DischargeStatusTableWithPagination;
