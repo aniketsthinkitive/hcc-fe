@@ -35,7 +35,9 @@ const CustomDialog = (props: React.PropsWithChildren<CustomDialogProps>) => {
   } = props;
   return (
     <Dialog
-      onClose={onClose}
+      onClose={(event, reason) =>
+        onClose(event as React.SyntheticEvent, reason)
+      }
       keepMounted
       aria-labelledby="customized-dialog-title"
       open={open}
@@ -51,7 +53,7 @@ const CustomDialog = (props: React.PropsWithChildren<CustomDialogProps>) => {
     >
       <DialogTitle
         id="customized-dialog-title"
-        sx={{ ...customDialogStyles.dialogTitle, padding: "5px 20px" }}
+        sx={customDialogStyles.dialogTitle}
       >
         <Grid
           container
@@ -60,24 +62,22 @@ const CustomDialog = (props: React.PropsWithChildren<CustomDialogProps>) => {
           alignContent={"center"}
         >
           <Grid>
-            <Typography variant="body3">{title}</Typography>
+            <Typography variant="h6">{title}</Typography>
           </Grid>
           <Grid>
             <IconButton
               aria-label="close"
-              onClick={onClose}
+              onClick={() => onClose()}
               sx={customDialogStyles.closeIcon}
             >
               <CloseIcon />
             </IconButton>
           </Grid>
         </Grid>
-        <Divider orientation="horizontal" sx={{ m: "10px 0px" }} />
       </DialogTitle>
+      <Divider orientation="horizontal" sx={{ m: "-10px 0px" }} />
       <DialogContent sx={{ overflow: overFlow, padding: padding }}>
-        <Grid flex={1}>
-          {props.children}
-        </Grid>
+        <Grid flex={1}>{props.children}</Grid>
       </DialogContent>
     </Dialog>
   );
