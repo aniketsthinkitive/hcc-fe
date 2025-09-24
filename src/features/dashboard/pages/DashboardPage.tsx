@@ -1,6 +1,7 @@
 import { Box, Typography, Paper } from '@mui/material';
 import { Paginator } from '../../../components/pagination';
 import EnhancedTableTemplate from '../../../components/common-table/enhanced-table-template';
+import SnackbarExample from '../../../components/common-snackbar/snackbar-example';
 
 const DashboardPage = () => {
   return (
@@ -30,6 +31,7 @@ const DashboardPage = () => {
 
       {/* Enhanced Table Component */}
       <EnhancedTableTemplate />
+      <SnackbarExample />
 
       {/* Pagination */}
       <Paper sx={{ padding: 2, marginTop: 3 }}>
