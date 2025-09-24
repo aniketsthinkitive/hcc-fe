@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Drawer,
   Box,
@@ -13,10 +13,12 @@ import { Close as CloseIcon, Check as CheckIcon } from '@mui/icons-material';
 import CustomInput from '../../../components/custom-input/custom-input';
 import CustomSelect from '../../../components/custom-select/custom-select';
 import CustomLabel from '../../../components/custom-label/custom-label';
+import type { OrganizationData } from '../types/organization.types';
 
 interface NewOrganizationSidebarProps {
   open: boolean;
   onClose: () => void;
+  editingData?: OrganizationData | null;
 }
 
 // Form data interface
@@ -40,7 +42,7 @@ interface FormData {
   enableGrantFunding: boolean;
 }
 
-const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, onClose }) => {
+const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, onClose, editingData }) => {
   // Form state
   const [formData, setFormData] = useState<FormData>({
     organizationShortName: '',
@@ -110,6 +112,54 @@ const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, o
     }));
   };
 
+  // Populate form when editing data is provided
+  useEffect(() => {
+    console.log('Sidebar editingData changed:', editingData);
+    if (editingData) {
+      console.log('Populating form with editing data');
+      setFormData({
+        organizationShortName: editingData.organization || '',
+        organizationTimeZone: editingData.timeZone || '',
+        allTreatmentsAvailable: false, // Default values for checkboxes
+        usesDaylightSavings: editingData.usesDST === 'Y',
+        attachComplianceReports: false,
+        organizationName: editingData.organization || '',
+        addressLine1: '', // These would need to be added to OrganizationData interface
+        addressLine2: '',
+        city: '',
+        state: '',
+        zip: '',
+        phoneNumber: '',
+        faxNumber: '',
+        contactPersonName: '',
+        clientsVisibleToAllUsers: editingData.visibleToAllUsers === 'Y',
+        externalUsersCanManageVouchers: false,
+        enableGrantFunding: false,
+      });
+    } else {
+      // Reset form for new organization
+      setFormData({
+        organizationShortName: '',
+        organizationTimeZone: '',
+        allTreatmentsAvailable: false,
+        usesDaylightSavings: false,
+        attachComplianceReports: false,
+        organizationName: '',
+        addressLine1: '',
+        addressLine2: '',
+        city: '',
+        state: '',
+        zip: '',
+        phoneNumber: '',
+        faxNumber: '',
+        contactPersonName: '',
+        clientsVisibleToAllUsers: false,
+        externalUsersCanManageVouchers: false,
+        enableGrantFunding: false,
+      });
+    }
+  }, [editingData]);
+
   // Handle form submission
   const handleSave = () => {
     console.log('Form data:', formData);
@@ -128,7 +178,8 @@ const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, o
           zIndex: 1299, // Backdrop should be below drawer but above other content
         },
         '& .MuiDrawer-paper': {
-          width: { xs: '100%', sm: '50vw', md: '50vw' },
+          width: { xs: '100%', sm: '80%', md: '60%', lg: '50%' },
+          maxWidth: { xs: '100%', sm: '600px', md: '700px' },
           backgroundColor: '#FFFFFF',
           boxShadow: '0px 4px 12px 0px rgba(0, 0, 0, 0.12)',
           display: 'flex',
@@ -139,7 +190,7 @@ const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, o
     >
       {/* Sticky Header */}
       <Box sx={{ 
-        p: 3, 
+        p: { xs: 2, sm: 3 }, 
         borderBottom: '1px solid #E7E9EB',
         backgroundColor: '#FFFFFF',
         position: 'sticky',
@@ -156,7 +207,7 @@ const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, o
               fontSize: { xs: '20px', sm: '24px' }
             }}
           >
-            Add New Organization
+            {editingData ? 'Edit Organization' : 'Add New Organization'}
           </Typography>
           <IconButton onClick={onClose} sx={{ color: '#989998' }}>
             <CloseIcon />
@@ -168,10 +219,10 @@ const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, o
       <Box sx={{ 
         flex: 1, 
         overflow: 'auto', 
-        p: 3,
+        p: { xs: 2, sm: 3 },
         display: 'flex',
         flexDirection: 'column',
-        gap: 3
+        gap: { xs: 2, sm: 3 }
       }}>
         {/* General Information Section */}
         <Box>
@@ -187,7 +238,10 @@ const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, o
               />
             </Box>
 
-            <Box>
+            <Box sx={{ 
+              width: { xs: '100%', sm: '50%', md: '40%' },
+              minWidth: { xs: '100%', sm: '200px' }
+            }}>
               <CustomLabel label="Organization Time Zone" isRequired />
               <CustomSelect
                 name="organizationTimeZone"
@@ -281,34 +335,40 @@ const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, o
               />
             </Box>
 
-            <Box>
-              <CustomLabel label="Address Line 1" isRequired />
-              <CustomInput
-                name="addressLine1"
-                placeholder="Enter Address Line 1"
-                value={formData.addressLine1}
-                onChange={handleInputChange('addressLine1')}
-                required
-              />
-            </Box>
-
-            <Box>
-              <CustomLabel label="Address Line 2" />
-              <CustomInput
-                name="addressLine2"
-                placeholder="Enter Address Line 2"
-                value={formData.addressLine2}
-                onChange={handleInputChange('addressLine2')}
-              />
-            </Box>
-
-            {/* City, State, Zip in responsive layout */}
+            {/* Address Line 1 and 2 - Horizontal layout */}
             <Box sx={{ 
               display: 'flex', 
               flexDirection: { xs: 'column', sm: 'row' }, 
               gap: 2 
             }}>
-              <Box sx={{ flex: { xs: 1, sm: 2 } }}>
+              <Box sx={{ flex: 1 }}>
+                <CustomLabel label="Address Line 1" isRequired />
+                <CustomInput
+                  name="addressLine1"
+                  placeholder="Enter Address Line 1"
+                  value={formData.addressLine1}
+                  onChange={handleInputChange('addressLine1')}
+                  required
+                />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <CustomLabel label="Address Line 2" />
+                <CustomInput
+                  name="addressLine2"
+                  placeholder="Enter Address Line 2"
+                  value={formData.addressLine2}
+                  onChange={handleInputChange('addressLine2')}
+                />
+              </Box>
+            </Box>
+
+            {/* City, State, Zip - Uniform width and equal spacing */}
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', sm: 'row' }, 
+              gap: 2 
+            }}>
+              <Box sx={{ flex: 1 }}>
                 <CustomLabel label="City" isRequired />
                 <CustomInput
                   name="city"
@@ -346,32 +406,7 @@ const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, o
 
         {/* Contact Information Section */}
         <Box>
-          
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box>
-              <CustomLabel label="Phone Number" isRequired />
-              <CustomInput
-                name="phoneNumber"
-                placeholder="eg. (205) 555-0100"
-                value={formData.phoneNumber}
-                onChange={handleInputChange('phoneNumber')}
-                format="phone"
-                required
-              />
-            </Box>
-
-            <Box>
-              <CustomLabel label="Fax Number" isRequired />
-              <CustomInput
-                name="faxNumber"
-                placeholder="eg. (205) 555-0100"
-                value={formData.faxNumber}
-                onChange={handleInputChange('faxNumber')}
-                format="phone"
-                required
-              />
-            </Box>
-
             <Box>
               <CustomLabel label="Contact Person Name" isRequired />
               <CustomInput
@@ -381,6 +416,36 @@ const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, o
                 onChange={handleInputChange('contactPersonName')}
                 required
               />
+            </Box>
+
+            {/* Phone and Fax - Horizontal layout */}
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', sm: 'row' }, 
+              gap: 2 
+            }}>
+              <Box sx={{ flex: 1 }}>
+                <CustomLabel label="Phone Number" isRequired />
+                <CustomInput
+                  name="phoneNumber"
+                  placeholder="eg. (205) 555-0100"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange('phoneNumber')}
+                  format="phone"
+                  required
+                />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <CustomLabel label="Fax Number" isRequired />
+                <CustomInput
+                  name="faxNumber"
+                  placeholder="eg. (205) 555-0100"
+                  value={formData.faxNumber}
+                  onChange={handleInputChange('faxNumber')}
+                  format="phone"
+                  required
+                />
+              </Box>
             </Box>
           </Box>
         </Box>
@@ -474,30 +539,11 @@ const NewOrganizationSidebar: React.FC<NewOrganizationSidebarProps> = ({ open, o
           </Box>
         </Box>
 
-        <Divider />
-
-        {/* Note Section */}
-        <Box sx={{
-          backgroundColor: '#FFF3E0',
-          border: '1px solid #FFB74D',
-          borderRadius: 2,
-          p: 2,
-        }}>
-          <Typography variant="h6" sx={{ mb: 1, color: '#E65100', fontWeight: 600 }}>
-            Note
-          </Typography>
-          <Typography variant="body2" sx={{ color: '#E65100', fontSize: '12px', lineHeight: 1.5 }}>
-            <strong>*</strong> If this is checked, then all client treatments and client Lab Test Panels are available to a client assigned to this organization. If it is not checked, then not all Treatments and Lab Test Panels are available to clients assigned to this organization. In this case each Treatment (TreatsGroups/Treatments) or Lab Test (Admin/Lab Tests) must be individually set to allow access.
-          </Typography>
-          <Typography variant="body2" sx={{ color: '#E65100', fontSize: '12px', lineHeight: 1.5, mt: 1 }}>
-            <strong>**</strong> When adding a new organization, no UA tests will be available. Add the organization, then go to the Admin/Lab Tests screen and enable the UA tests available to the new organization, then come back to the newly added organization (Admin/Organizations) specify the default UA tests.
-          </Typography>
-        </Box>
       </Box>
 
       {/* Sticky Footer */}
       <Box sx={{ 
-        p: 3, 
+        p: { xs: 2, sm: 3 }, 
         borderTop: '1px solid #E7E9EB',
         backgroundColor: '#FFFFFF',
         position: 'sticky',

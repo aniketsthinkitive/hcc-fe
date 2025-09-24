@@ -15,10 +15,13 @@ const AllOrganizationsHeader: React.FC<AllOrganizationsHeaderProps> = ({
     <Box
       sx={{
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        mb: 3,
+        flexDirection: { xs: 'column', sm: 'row' },
+        justifyContent: { xs: 'flex-start', sm: 'space-between' },
+        alignItems: { xs: 'flex-start', sm: 'center' },
+        gap: { xs: 2, sm: 0 },
+        mb: { xs: 2, sm: 3 },
         padding: 0,
+        width: '100%',
       }}
     >
       {/* Page Title */}
@@ -26,7 +29,7 @@ const AllOrganizationsHeader: React.FC<AllOrganizationsHeaderProps> = ({
         variant="h4"
         component="h1"
         sx={{
-          fontSize: '24px',
+          fontSize: { xs: '20px', sm: '24px' },
           fontWeight: 600,
           lineHeight: 1.2,
           color: '#2C2D2C',
@@ -37,7 +40,12 @@ const AllOrganizationsHeader: React.FC<AllOrganizationsHeaderProps> = ({
       </Typography>
 
       {/* Action Buttons */}
-      <Box sx={{ display: 'flex', gap: 2 }}>
+      <Box sx={{ 
+        display: 'flex', 
+        gap: { xs: 1, sm: 2 },
+        flexDirection: { xs: 'column', sm: 'row' },
+        width: { xs: '100%', sm: 'auto' }
+      }}>
         {/* Download CSV Button */}
         <Button
           variant="outlined"
@@ -48,17 +56,19 @@ const AllOrganizationsHeader: React.FC<AllOrganizationsHeaderProps> = ({
             color: '#2C2D2C',
             textTransform: 'none',
             fontWeight: 500,
-            padding: '8px 16px',
+            padding: { xs: '6px 12px', sm: '8px 16px' },
             borderRadius: 2,
             backgroundColor: '#FFFFFF',
             boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
+            fontSize: { xs: '12px', sm: '14px' },
+            width: { xs: '100%', sm: 'auto' },
             '&:hover': {
               borderColor: '#439322',
               backgroundColor: 'rgba(67, 147, 34, 0.04)',
               boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.1)',
             },
             '& .MuiButton-startIcon': {
-              marginRight: '8px',
+              marginRight: { xs: '6px', sm: '8px' },
             },
           }}
         >
@@ -75,15 +85,17 @@ const AllOrganizationsHeader: React.FC<AllOrganizationsHeaderProps> = ({
             color: '#FFFFFF',
             textTransform: 'none',
             fontWeight: 500,
-            padding: '8px 16px',
+            padding: { xs: '6px 12px', sm: '8px 16px' },
             borderRadius: 2,
             boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
+            fontSize: { xs: '12px', sm: '14px' },
+            width: { xs: '100%', sm: 'auto' },
             '&:hover': {
               backgroundColor: '#2C6E14',
               boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.1)',
             },
             '& .MuiButton-startIcon': {
-              marginRight: '8px',
+              marginRight: { xs: '6px', sm: '8px' },
             },
           }}
         >

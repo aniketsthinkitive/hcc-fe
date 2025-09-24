@@ -12,19 +12,14 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Paper,
 } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
-import Paginator from '../../../components/pagination/pagination';
 import type { OrganizationData } from '../types/organization.types';
 import {
   tableContainerCss,
   tableCellCss,
   heading,
   primaryTextCss,
-  numberTextCss,
-  statusIndicatorCss,
-  toggleSwitchCss,
   actionMenuButtonCss,
   actionMenuItemCss,
   emptyStateCss,
@@ -35,14 +30,8 @@ interface OrganizationsTableProps {
   data: OrganizationData[];
   loading?: boolean;
   onStatusToggle?: (id: string, status: 'active' | 'inactive') => void;
-  onActionClick?: (action: string, id: string) => void;
-  pagination?: {
-    page: number;
-    totalPages: number;
-    totalRecords: number;
-    onPageChange: (page: number) => void;
-    onRecordsPerPageChange: (size: number) => void;
-  };
+  onEditClick?: (id: string) => void;
+  onArchiveClick?: (id: string) => void;
 }
 
 // Table headers configuration
@@ -52,8 +41,6 @@ const tableHeaders = [
   { id: 'timeZone', label: 'Time Zone', width: '120px' },
   { id: 'usesDST', label: 'Uses DST', width: '100px' },
   { id: 'visibleToAllUsers', label: 'Vis To All Users', width: '140px' },
-  { id: 'defaultPrimaryDrugTest', label: 'Default Primary Drug Test', width: '180px' },
-  { id: 'defaultAlternateDrugTest', label: 'Default Alternate Drug Test', width: '180px' },
   { id: 'numActiveClients', label: 'Num Active Clients', width: '140px' },
   { id: 'numTotalClients', label: 'Num Total Clients', width: '140px' },
   { id: 'actions', label: 'Action', width: '80px' },
@@ -63,8 +50,8 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
   data,
   loading = false,
   onStatusToggle,
-  onActionClick,
-  pagination,
+  onEditClick,
+  onArchiveClick,
 }) => {
   const [anchorEl, setAnchorEl] = useState<{ [key: string]: HTMLElement | null }>({});
 
@@ -83,58 +70,31 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
     setAnchorEl(prev => ({ ...prev, [id]: null }));
   };
 
-  const handleActionClick = (action: string, id: string) => {
-    onActionClick?.(action, id);
+  const handleEditClick = (id: string) => {
+    onEditClick?.(id);
     handleActionMenuClose(id);
   };
 
-  // Mock data for demonstration
-  const mockData: OrganizationData[] = [
-    {
-      id: '1',
-      organization: '10th JD El Paso',
-      status: 'active',
-      timeZone: 'Mountain',
-      usesDST: 'Y',
-      visibleToAllUsers: 'N',
-      defaultPrimaryDrugTest: '-',
-      defaultAlternateDrugTest: '-',
-      numActiveClients: 100,
-      numTotalClients: 100,
-    },
-    {
-      id: '2',
-      organization: '11th JD',
-      status: 'inactive',
-      timeZone: 'Hawaii',
-      usesDST: 'N',
-      visibleToAllUsers: 'Y',
-      defaultPrimaryDrugTest: '-',
-      defaultAlternateDrugTest: '-',
-      numActiveClients: 73,
-      numTotalClients: 73,
-    },
-    {
-      id: '3',
-      organization: '12th JD',
-      status: 'active',
-      timeZone: 'Mountain',
-      usesDST: 'Y',
-      visibleToAllUsers: 'N',
-      defaultPrimaryDrugTest: '-',
-      defaultAlternateDrugTest: '-',
-      numActiveClients: 89,
-      numTotalClients: 89,
-    },
-  ];
+  const handleArchiveClick = (id: string) => {
+    onArchiveClick?.(id);
+    handleActionMenuClose(id);
+  };
 
-  const tableData = data.length > 0 ? data : mockData;
+  const tableData = data;
 
   return (
-    <Box>
-      <Paper sx={{ overflow: 'hidden' }}>
-        <TableContainer sx={tableContainerCss}>
-          <Table stickyHeader aria-label="organizations table">
+    <Box sx={{ 
+      width: '100%', 
+      height: '100%',
+      overflow: 'auto'
+    }}>
+      <TableContainer sx={{ 
+        ...tableContainerCss, 
+        width: '100%', 
+        height: '100%',
+        maxHeight: { xs: '60vh', sm: '70vh', md: '75vh' }
+      }}>
+        <Table stickyHeader aria-label="organizations table" sx={{ minWidth: 800 }}>
             <TableHead>
               <TableRow>
                 {tableHeaders.map((header) => (
@@ -143,13 +103,15 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                     sx={{
                       ...heading,
                       width: header.width,
-                      minWidth: header.width,
+                      minWidth: { xs: '120px', sm: header.width },
+                      fontSize: { xs: '10px', sm: '12px' },
+                      padding: { xs: '8px 12px', sm: '12px 16px' }
                     }}
-                    align={header.id.includes('Num') ? 'right' : 'left'}
+                    align="left"
                   >
                     <Typography
                       sx={{
-                        fontSize: '12px',
+                        fontSize: { xs: '10px', sm: '12px' },
                         fontWeight: 500,
                         lineHeight: '1.2',
                         color: '#757775',
@@ -183,79 +145,140 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                 tableData.map((row) => (
                   <TableRow key={row.id} hover>
                     {/* Organization */}
-                    <TableCell sx={tableCellCss}>
-                      <Typography sx={primaryTextCss}>
+                    <TableCell sx={{
+                      ...tableCellCss,
+                      padding: { xs: '8px 12px', sm: '12px 16px' }
+                    }}>
+                      <Typography sx={{
+                        ...primaryTextCss,
+                        fontSize: { xs: '12px', sm: '14px' }
+                      }}>
                         {row.organization}
                       </Typography>
                     </TableCell>
 
                     {/* Status */}
-                    <TableCell sx={tableCellCss}>
+                    <TableCell sx={{
+                      ...tableCellCss,
+                      padding: { xs: '8px 12px', sm: '12px 16px' }
+                    }}>
                       <Switch
                         checked={row.status === 'active'}
                         onChange={() => handleStatusToggle(row.id, row.status)}
-                        sx={toggleSwitchCss}
                         size="small"
+                        sx={{
+                          width: { xs: 32, sm: 36 },
+                          height: { xs: 18, sm: 20 },
+                          padding: 0,
+                          '& .MuiSwitch-switchBase': {
+                            padding: '2px',
+                            '&.Mui-checked': {
+                              transform: { xs: 'translateX(14px)', sm: 'translateX(16px)' },
+                              '& + .MuiSwitch-track': {
+                                backgroundColor: '#439322', // Primary/70 Main
+                                opacity: 1,
+                              },
+                              '& .MuiSwitch-thumb': {
+                                backgroundColor: '#FFFFFF',
+                              },
+                            },
+                          },
+                          '& .MuiSwitch-thumb': {
+                            width: { xs: 14, sm: 16 },
+                            height: { xs: 14, sm: 16 },
+                            backgroundColor: '#FFFFFF',
+                            boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.06), 0px 1px 3px 0px rgba(16, 24, 40, 0.1)',
+                          },
+                          '& .MuiSwitch-track': {
+                            backgroundColor: '#DDE0DD', // Neutral/10
+                            opacity: 1,
+                            borderRadius: 12,
+                          },
+                        }}
                       />
                     </TableCell>
 
                     {/* Time Zone */}
-                    <TableCell sx={tableCellCss}>
-                      <Typography sx={primaryTextCss}>
+                    <TableCell sx={{
+                      ...tableCellCss,
+                      padding: { xs: '8px 12px', sm: '12px 16px' }
+                    }}>
+                      <Typography sx={{
+                        ...primaryTextCss,
+                        fontSize: { xs: '12px', sm: '14px' }
+                      }}>
                         {row.timeZone}
                       </Typography>
                     </TableCell>
 
                     {/* Uses DST */}
-                    <TableCell sx={tableCellCss} align="center">
-                      <Typography sx={statusIndicatorCss}>
+                    <TableCell sx={{
+                      ...tableCellCss,
+                      padding: { xs: '8px 12px', sm: '12px 16px' }
+                    }}>
+                      <Typography sx={{
+                        ...primaryTextCss,
+                        fontSize: { xs: '12px', sm: '14px' }
+                      }}>
                         {row.usesDST}
                       </Typography>
                     </TableCell>
 
                     {/* Visible to All Users */}
-                    <TableCell sx={tableCellCss} align="center">
-                      <Typography sx={statusIndicatorCss}>
+                    <TableCell sx={{
+                      ...tableCellCss,
+                      padding: { xs: '8px 12px', sm: '12px 16px' }
+                    }}>
+                      <Typography sx={{
+                        ...primaryTextCss,
+                        fontSize: { xs: '12px', sm: '14px' }
+                      }}>
                         {row.visibleToAllUsers}
                       </Typography>
                     </TableCell>
 
-                    {/* Default Primary Drug Test */}
-                    <TableCell sx={tableCellCss}>
-                      <Typography sx={primaryTextCss}>
-                        {row.defaultPrimaryDrugTest}
-                      </Typography>
-                    </TableCell>
-
-                    {/* Default Alternate Drug Test */}
-                    <TableCell sx={tableCellCss}>
-                      <Typography sx={primaryTextCss}>
-                        {row.defaultAlternateDrugTest}
-                      </Typography>
-                    </TableCell>
 
                     {/* Num Active Clients */}
-                    <TableCell sx={tableCellCss} align="right">
-                      <Typography sx={numberTextCss}>
+                    <TableCell sx={{
+                      ...tableCellCss,
+                      padding: { xs: '8px 12px', sm: '12px 16px' }
+                    }}>
+                      <Typography sx={{
+                        ...primaryTextCss,
+                        fontSize: { xs: '12px', sm: '14px' }
+                      }}>
                         {row.numActiveClients}
                       </Typography>
                     </TableCell>
 
                     {/* Num Total Clients */}
-                    <TableCell sx={tableCellCss} align="right">
-                      <Typography sx={numberTextCss}>
+                    <TableCell sx={{
+                      ...tableCellCss,
+                      padding: { xs: '8px 12px', sm: '12px 16px' }
+                    }}>
+                      <Typography sx={{
+                        ...primaryTextCss,
+                        fontSize: { xs: '12px', sm: '14px' }
+                      }}>
                         {row.numTotalClients}
                       </Typography>
                     </TableCell>
 
                     {/* Actions */}
-                    <TableCell sx={tableCellCss}>
+                    <TableCell sx={{
+                      ...tableCellCss,
+                      padding: { xs: '8px 12px', sm: '12px 16px' }
+                    }}>
                       <IconButton
                         onClick={(e) => handleActionMenuOpen(row.id, e)}
-                        sx={actionMenuButtonCss}
+                        sx={{
+                          ...actionMenuButtonCss,
+                          padding: { xs: '4px', sm: '4px' },
+                          minWidth: { xs: '32px', sm: 'auto' }
+                        }}
                         size="small"
                       >
-                        <MoreVertIcon />
+                        <MoreVertIcon sx={{ fontSize: { xs: '16px', sm: '20px' } }} />
                       </IconButton>
                       <Menu
                         anchorEl={anchorEl[row.id]}
@@ -279,22 +302,16 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                         }}
                       >
                         <MenuItem
-                          onClick={() => handleActionClick('edit', row.id)}
+                          onClick={() => handleEditClick(row.id)}
                           sx={actionMenuItemCss}
                         >
                           Edit
                         </MenuItem>
                         <MenuItem
-                          onClick={() => handleActionClick('duplicate', row.id)}
+                          onClick={() => handleArchiveClick(row.id)}
                           sx={actionMenuItemCss}
                         >
-                          Duplicate
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => handleActionClick('delete', row.id)}
-                          sx={actionMenuItemCss}
-                        >
-                          Delete
+                          Archive
                         </MenuItem>
                       </Menu>
                     </TableCell>
@@ -302,23 +319,8 @@ const OrganizationsTable: React.FC<OrganizationsTableProps> = ({
                 ))
               )}
             </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-
-      {/* Pagination */}
-      {pagination && (
-        <Box sx={{ mt: 2 }}>
-          <Paginator
-            page={pagination.page}
-            totalPages={pagination.totalPages}
-            totalRecord={pagination.totalRecords}
-            onPageChange={(_, page) => pagination.onPageChange(page)}
-            onRecordsPerPageChange={pagination.onRecordsPerPageChange}
-            defaultSize={13}
-          />
-        </Box>
-      )}
+        </Table>
+      </TableContainer>
     </Box>
   );
 };
