@@ -72,7 +72,14 @@ const TimePickerField = (props: TimePickerFieldProps) => {
           sx={timePickerStyles}
         />
       </LocalizationProvider>
-      <Typography sx={errorStyle} variant="caption">
+      <Typography 
+        sx={{
+          ...errorStyle,
+          fontSize: "0.75rem",
+          lineHeight: 1.66,
+          letterSpacing: "0.03333em",
+        }}
+      >
         {hasError ? errorMessage : ""}
       </Typography>
     </Stack>

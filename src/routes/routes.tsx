@@ -27,6 +27,7 @@ import RolesPermissionsList from "../features/admin/pages/Roles&PermissionsList"
 import UserManagementList from "../features/admin/pages/UserManagementList";
 import IntakeAppointmentPage from "../features/appointment/pages/IntakeAppointmentPage";
 import IntakeAppointmentSuccessPage from "../features/appointment/pages/IntakeAppointmentSuccessPage";
+import OfficeInformationPage from "../features/admin/pages/OfficeInformationPage";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -101,6 +102,7 @@ const AppRoutes: React.FC = () => {
         {/* Admin Settings */}
         <Route path="settings" element={<AdminPage />} />
 
+        <Route path="office-information" element={<OfficeInformationPage />} />
         {/* Roles & Permissions */}
         <Route path="roles-permissions" element={<RolesPermissionsList />} />
 

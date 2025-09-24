@@ -76,12 +76,14 @@ function CustomSelect(props: CustomSelectProps) {
         error={props.hasError}
         renderValue={(selected) => (
           <Typography
-            variant="body2"
             className={`${customSelectStyles.headerLabel}`}
             sx={{
               color: selected
                 ? theme.palette.grey[800]
                 : theme.palette.grey[500],
+              fontSize: "0.875rem",
+              lineHeight: 1.43,
+              letterSpacing: "0.01071em",
             }}
           >
             {selected || props?.placeholder}
@@ -110,7 +112,14 @@ function CustomSelect(props: CustomSelectProps) {
           ))}
       </Select>
       {props.hasError && (
-        <Typography sx={errorStyle} variant="caption">
+        <Typography 
+          sx={{
+            ...errorStyle,
+            fontSize: "0.75rem",
+            lineHeight: 1.66,
+            letterSpacing: "0.03333em",
+          }}
+        >
           {props.hasError ? props.errorMessage : ""}
         </Typography>
       )}
