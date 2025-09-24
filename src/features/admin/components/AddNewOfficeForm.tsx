@@ -153,6 +153,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
           alignItems: "center",
           padding: "12px 16px",
           borderBottom: "1px solid #E3ECEF",
+          flexShrink: 0,
         }}
       >
         <Typography
@@ -170,14 +171,14 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
             width: "38px",
             height: "38px",
             borderRadius: "8px",
-            backgroundColor: "#F6F6F6",
+            // backgroundColor: "#F6F6F6",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            "&:hover": {
-              backgroundColor: "#E7E9EB",
-            },
+            // "&:hover": {
+            //   backgroundColor: "#E7E9EB",
+            // },
           }}
           onClick={onCancel}
         >
@@ -203,7 +204,6 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
           <Box sx={{ display: "flex", flexDirection: "column", gap: "24px" }}>
             {/* Office Short Name and Checkbox */}
             <Box sx={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-              <CustomLabel label="Office Short Name" isRequired />
               <Controller
                 name="officeShortName"
                 control={control}
@@ -215,6 +215,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                       gap: "6px",
                     }}
                   >
+                    <CustomLabel label="Office Short Name" isRequired />
                     <CustomInput
                       placeholder="Enter Office Short Name"
                       name="officeShortName"
@@ -222,7 +223,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                       onChange={field.onChange}
                       hasError={!!errors.officeShortName}
                       errorMessage={errors.officeShortName?.message}
-                      required
+                      // required
                     />
                   </Box>
                 )}
@@ -470,7 +471,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                         onChange={field.onChange}
                         hasError={!!errors.addressLine1}
                         errorMessage={errors.addressLine1?.message}
-                        required
+                        // required
                       />
                     </Box>
                   )}
@@ -524,7 +525,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                         onChange={field.onChange}
                         hasError={!!errors.city}
                         errorMessage={errors.city?.message}
-                        required
+                        // required
                       />
                     </Box>
                   )}
@@ -580,7 +581,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                         onChange={field.onChange}
                         hasError={!!errors.zipCode}
                         errorMessage={errors.zipCode?.message}
-                        required
+                        // required
                       />
                     </Box>
                   )}
@@ -784,26 +785,31 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
             </Box>
           </Box>
         </Box>
-      </Box>
 
-      {/* Footer with Buttons */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          gap: "10px",
-          padding: "12px 16px",
-          borderTop: "1px solid #E3ECEF",
-          backgroundColor: "#FFFFFF",
-        }}
-      >
-        <CustomButton variant="secondary" size="md" onClick={onCancel}>
-          Cancel
-        </CustomButton>
-        <CustomButton variant="primary" size="md" type="submit">
-          Save
-        </CustomButton>
+        {/* Fixed Footer with Buttons */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            gap: "10px",
+            padding: "12px 16px",
+            borderTop: "1px solid #E3ECEF",
+            backgroundColor: "#FFFFFF",
+            flexShrink: 0,
+          }}
+        >
+          <CustomButton variant="secondary" size="md" onClick={onCancel}>
+            Cancel
+          </CustomButton>
+          <CustomButton
+            variant="primary"
+            size="md"
+            type="submit"
+          >
+            Save
+          </CustomButton>
+        </Box>
       </Box>
     </Box>
   );
