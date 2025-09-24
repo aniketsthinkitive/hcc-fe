@@ -59,12 +59,22 @@ const CustomDrawer = (props: React.PropsWithChildren<DrawerProps>) => {
         {props.title && (
           <Grid
             container
-            alignItems="center"
-            sx={gridHeader}
-            mt={props.headerStyle}
+            sx={{
+              ...gridHeader,
+              alignItems: "center",
+              mt: props.headerStyle,
+            }}
           >
             <Grid>
-              <Typography sx={drawerHeader} variant="h6">
+              <Typography 
+                sx={{
+                  ...drawerHeader,
+                  fontSize: "1.25rem",
+                  lineHeight: 1.6,
+                  letterSpacing: "0.0075em",
+                  fontWeight: 600,
+                }}
+              >
                 {props.title}
               </Typography>
             </Grid>

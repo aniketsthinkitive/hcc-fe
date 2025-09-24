@@ -177,6 +177,7 @@ const CustomAutoComplete = (props: CustomAutoCompleteProps) => {
                 fontSize: "14px",
                 letterSpacing: "0.25%",
                 lineHeight: "150%",
+                height: "44px",
               },
             }}
             onClick={onClick && !isDisabled ? onClick : undefined}
@@ -186,10 +187,12 @@ const CustomAutoComplete = (props: CustomAutoCompleteProps) => {
       />
       <Typography
         sx={{
-          color: theme.palette.warning.dark,
+          color: theme.palette.error.main,
           marginLeft: props.hasError ? "5px" : "0px",
+          fontSize: "0.75rem",
+          lineHeight: 1.66,
+          letterSpacing: "0.03333em",
         }}
-        variant="caption"
       >
         {props.hasError ? props.errorMessage : ""}
       </Typography>

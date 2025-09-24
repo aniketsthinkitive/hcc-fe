@@ -187,10 +187,12 @@ const CustomAutocompleteMultiselect = memo(({
       {hasError && errorMessage && (
         <Typography
           sx={{
-            color: theme.palette.warning.dark,
+            color: theme.palette.error.main,
             marginLeft: "5px",
+            fontSize: "0.75rem",
+            lineHeight: 1.66,
+            letterSpacing: "0.03333em",
           }}
-          variant="caption"
         >
           {errorMessage}
         </Typography>

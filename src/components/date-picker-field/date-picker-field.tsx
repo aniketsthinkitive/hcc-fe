@@ -124,7 +124,14 @@ const DatePickerField = (props: DatePickerProps) => {
         />
       </LocalizationProvider>
       {hasError && errorMessage && (
-        <Typography variant="caption" sx={errorStyle}>
+        <Typography 
+          sx={{
+            ...errorStyle,
+            fontSize: "0.75rem",
+            lineHeight: 1.66,
+            letterSpacing: "0.03333em",
+          }}
+        >
           {errorMessage}
         </Typography>
       )}

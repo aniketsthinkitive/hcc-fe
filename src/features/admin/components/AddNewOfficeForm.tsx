@@ -254,17 +254,18 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                     }}
                   >
                     <CustomLabel label="Office Time Zone" isRequired />
-                    <CustomSelect
-                      placeholder="Enter Office Time Zone"
-                      name="officeTimeZone"
-                      value={field.value}
-                      onChange={field.onChange}
-                      items={timezoneOptions.map((option) => ({
-                        value: option.key,
-                        label: option.value,
-                      }))}
+                    <CustomAutoComplete
+                      value={String(field.value)}
+                      placeholder="Select Office Time Zone"
+                      options={timezoneOptions}
+                      onChange={(selectedValue) => {
+                        setValue("officeTimeZone", selectedValue, {
+                          shouldValidate: true,
+                        });
+                      }}
                       hasError={!!errors.officeTimeZone}
                       errorMessage={errors.officeTimeZone?.message}
+                      maxHeightForOptionsList={250}
                     />
                   </Box>
                 )}
@@ -316,7 +317,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                   )}
                 />
 
-                <Controller
+                {/* <Controller
                   name="colorLineBPhoneNumber"
                   control={control}
                   render={({ field }) => (
@@ -340,7 +341,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                       />
                     </Box>
                   )}
-                />
+                /> */}
 
                 <Controller
                   name="faxPhoneNumber"
@@ -370,7 +371,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
               </Box>
 
               {/* SMS Reminder Footer */}
-              <Controller
+              {/* <Controller
                 name="smsReminderFooter"
                 control={control}
                 render={({ field }) => (
@@ -392,7 +393,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                     />
                   </Box>
                 )}
-              />
+              /> */}
 
               <Divider sx={{ borderColor: "#E3ECEF" }} />
 
@@ -555,7 +556,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                         }}
                         hasError={!!errors.physicalAddress?.state_id}
                         errorMessage={errors.physicalAddress?.state_id?.message}
-                        maxHeightForOptionsList={200}
+                        maxHeightForOptionsList={250}
                       />
                     </Box>
                   )}
@@ -602,7 +603,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                         gap: "6px",
                       }}
                     >
-                      <CustomLabel label="NPI Number" />
+                      <CustomLabel label="Group NPI Number" />
                       <CustomInput
                         placeholder="Enter NPI Number"
                         name="npiNumber"
@@ -679,14 +680,18 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
                     }}
                   >
                     <CustomLabel label="Attending Doctor" />
-                    <CustomSelect
+                    <CustomAutoComplete
+                      value={String(field.value)}
                       placeholder="Select"
-                      name="attendingDoctor"
-                      value={field.value}
-                      onChange={field.onChange}
-                      items={[{ value: "", label: "Select Doctor" }]}
+                      options={[]}
+                      onChange={(selectedValue) => {
+                        setValue("attendingDoctor", selectedValue, {
+                          shouldValidate: true,
+                        });
+                      }}
                       hasError={!!errors.attendingDoctor}
                       errorMessage={errors.attendingDoctor?.message}
+                      maxHeightForOptionsList={250}
                     />
                   </Box>
                 )}
@@ -802,11 +807,7 @@ const AddNewOfficeForm: React.FC<AddNewOfficeFormProps> = ({
           <CustomButton variant="secondary" size="md" onClick={onCancel}>
             Cancel
           </CustomButton>
-          <CustomButton
-            variant="primary"
-            size="md"
-            type="submit"
-          >
+          <CustomButton variant="primary" size="md" type="submit">
             Save
           </CustomButton>
         </Box>

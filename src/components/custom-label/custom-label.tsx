@@ -11,15 +11,15 @@ interface CustomFormLabelProps {
 const CustomLabel = React.memo<CustomFormLabelProps>(
   ({ label, isRequired, style }) => {
     return (
-      <Box mb={1} sx={style}>
+      <Box sx={{ mb: 1, ...style }}>
         <Typography
-          variant="subtitle1"
           sx={{
             letterSpacing: "inherit",
             fontSize: "14px",
             fontFamily: "Helvetica Neue, Arial, sans-serif",
             fontWeight: 500,
             color: customLabelStyles.headerLabel.color,
+            lineHeight: 1.75,
           }}
         >
           {label}
