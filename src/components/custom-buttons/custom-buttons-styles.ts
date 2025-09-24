@@ -5,7 +5,8 @@ export type ButtonVariant =
   | 'outline'
   | 'text'
   | 'icon'
-  | 'floating';
+  | 'floating'
+  | 'black';
 
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
@@ -29,7 +30,7 @@ export const getButtonStyles = (
   size: ButtonSize,
   fullWidth: boolean = false
 ): ButtonStyles => {
-  const baseFontFamily = '"Inter", "Geist", "Helvetica Neue", "Roboto", "Arial", sans-serif';
+  const baseFontFamily = '"Helvetica Neue", "Inter", "Geist", "Roboto", "Arial", sans-serif';
   
   // Size configurations
   const sizeConfig = {
@@ -42,19 +43,19 @@ export const getButtonStyles = (
       minWidth: '80px',
     },
     md: {
-      fontSize: '16px',
-      padding: '12px 24px',
-      height: '40px',
-      borderRadius: '8px',
-      iconSize: '20px',
+      fontSize: '14px',
+      padding: '10px 16px',
+      height: '38px',
+      borderRadius: '6px',
+      iconSize: '18px',
       minWidth: '100px',
     },
     lg: {
-      fontSize: '18px',
-      padding: '16px 32px',
-      height: '48px',
-      borderRadius: '10px',
-      iconSize: '24px',
+      fontSize: '16px',
+      padding: '12px 20px',
+      height: '44px',
+      borderRadius: '6px',
+      iconSize: '20px',
       minWidth: '120px',
     },
   };
@@ -65,25 +66,30 @@ export const getButtonStyles = (
   const baseButton: React.CSSProperties = {
     fontFamily: baseFontFamily,
     fontSize: config.fontSize,
-    fontWeight: 600,
-    lineHeight: '1.5',
-    letterSpacing: '0.25px',
+    fontWeight: 500,
+    lineHeight: '1.15',
+    letterSpacing: '0%',
     textTransform: 'none',
     borderRadius: config.borderRadius,
     height: config.height,
-    minWidth: fullWidth ? '100%' : config.minWidth,
+    width: fullWidth ? '100%' : 'auto',
+    minWidth: fullWidth ? '100%' : 'auto',
+    maxWidth: fullWidth ? '100%' : '167px',
     padding: config.padding,
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '8px',
     cursor: 'pointer',
-    border: 'none',
+    borderWidth: '0',
+    borderStyle: 'none',
+    borderColor: 'transparent',
     outline: 'none',
     transition: 'all 0.2s ease-in-out',
     position: 'relative',
     overflow: 'hidden',
     boxSizing: 'border-box',
+    whiteSpace: 'nowrap',
   };
 
   // Variant-specific styles
@@ -107,28 +113,36 @@ export const getButtonStyles = (
       },
     },
     secondary: {
-      backgroundColor: '#F5F5F5',
-      color: '#333333',
-      border: '1px solid #E0E0E0',
+      backgroundColor: '#FBFFF7',
+      color: '#439322',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: '#439322',
+      boxShadow: 'none',
       '&:hover': {
-        backgroundColor: '#EEEEEE',
-        borderColor: '#D0D0D0',
+        backgroundColor: '#F0F8E8',
+        borderColor: '#3a7f1e',
+        color: '#439322',
         transform: 'translateY(-1px)',
       },
       '&:focus': {
-        backgroundColor: '#F5F5F5',
+        backgroundColor: '#FBFFF7',
         borderColor: '#439322',
+        color: '#439322',
         boxShadow: '0 0 0 3px rgba(67, 147, 34, 0.1)',
       },
       '&:active': {
-        backgroundColor: '#E8E8E8',
+        backgroundColor: '#E8F5E0',
+        color: '#439322',
         transform: 'translateY(0)',
       },
     },
     tertiary: {
       backgroundColor: 'transparent',
       color: '#439322',
-      border: '1px solid #439322',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: '#439322',
       '&:hover': {
         backgroundColor: 'rgba(67, 147, 34, 0.05)',
         transform: 'translateY(-1px)',
@@ -145,7 +159,9 @@ export const getButtonStyles = (
     outline: {
       backgroundColor: 'transparent',
       color: '#666666',
-      border: '1px solid #CCCCCC',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: '#CCCCCC',
       '&:hover': {
         backgroundColor: '#F9F9F9',
         borderColor: '#999999',
@@ -166,7 +182,9 @@ export const getButtonStyles = (
     text: {
       backgroundColor: 'transparent',
       color: '#439322',
-      border: 'none',
+      borderWidth: '0',
+      borderStyle: 'none',
+      borderColor: 'transparent',
       padding: '8px 12px',
       minWidth: 'auto',
       '&:hover': {
@@ -185,7 +203,9 @@ export const getButtonStyles = (
     icon: {
       backgroundColor: 'transparent',
       color: '#666666',
-      border: 'none',
+      borderWidth: '0',
+      borderStyle: 'none',
+      borderColor: 'transparent',
       padding: '8px',
       minWidth: 'auto',
       width: config.height,
@@ -208,7 +228,9 @@ export const getButtonStyles = (
     floating: {
       backgroundColor: '#439322',
       color: '#FFFFFF',
-      border: 'none',
+      borderWidth: '0',
+      borderStyle: 'none',
+      borderColor: 'transparent',
       padding: '16px',
       minWidth: 'auto',
       width: '56px',
@@ -229,6 +251,31 @@ export const getButtonStyles = (
         transform: 'translateY(0)',
       },
     },
+    black: {
+      backgroundColor: 'transparent',
+      color: '#2C2D2C',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: '#DDE0DD',
+      boxShadow: 'none',
+      '&:hover': {
+        backgroundColor: '#F5F5F5',
+        borderColor: '#DDE0DD',
+        color: '#2C2D2C',
+        transform: 'translateY(-1px)',
+      },
+      '&:focus': {
+        backgroundColor: 'transparent',
+        borderColor: '#DDE0DD',
+        color: '#2C2D2C',
+        boxShadow: '0 0 0 3px rgba(44, 45, 44, 0.1)',
+      },
+      '&:active': {
+        backgroundColor: '#E8E8E8',
+        color: '#2C2D2C',
+        transform: 'translateY(0)',
+      },
+    },
   };
 
   const currentVariant = variantStyles[variant];
@@ -244,7 +291,9 @@ export const getButtonStyles = (
     buttonDisabled: {
       backgroundColor: '#F5F5F5',
       color: '#CCCCCC',
-      border: '1px solid #E0E0E0',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: '#E0E0E0',
       cursor: 'not-allowed',
       transform: 'none',
       boxShadow: 'none',
@@ -252,9 +301,10 @@ export const getButtonStyles = (
     text: {
       fontFamily: baseFontFamily,
       fontSize: config.fontSize,
-      fontWeight: 600,
-      lineHeight: '1.5',
-      letterSpacing: '0.25px',
+      fontWeight: 500,
+      lineHeight: '1.15',
+      letterSpacing: '0%',
+      color: 'inherit',
     },
     textDisabled: {
       color: '#CCCCCC',
@@ -264,6 +314,10 @@ export const getButtonStyles = (
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      color: 'inherit',
+      border: 'none',
+      borderRadius: '0',
+      outline: 'none',
     },
     iconDisabled: {
       color: '#CCCCCC',

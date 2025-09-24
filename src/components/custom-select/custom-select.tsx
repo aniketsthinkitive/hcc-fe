@@ -64,9 +64,9 @@ function CustomSelect(props: CustomSelectProps) {
         MenuProps={props.menuProps}
         sx={{
           ...selectInputStyle,
-          borderWidth: "0.5px",
+          borderWidth: "1px",
           backgroundColor: bgWhite === true ? "inherit" : "white",
-          borderColor: "#F1F1F1",
+          borderColor: "#CDD0CD",
           ...(height && { height }), // Apply custom height when provided
         }}
         displayEmpty
