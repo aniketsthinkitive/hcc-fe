@@ -3,10 +3,20 @@ import { Box } from '@mui/material';
 import AllOrganizationsHeader from '../components/AllOrganizationsHeader';
 import SearchFilterSection from '../components/SearchFilterSection';
 import NewOrganizationSidebar from '../components/NewOrganizationSidebar';
+import OrganizationsTable from '../components/OrganizationsTable';
+import type { OrganizationData } from '../types/organization.types';
 
 const AllOrganizations: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [organizations, setOrganizations] = useState<OrganizationData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    page: 0,
+    totalPages: 8,
+    totalRecords: 100,
+    pageSize: 13,
+  });
 
   const handleDownloadCSV = () => {
     console.log('Download CSV clicked');
@@ -31,6 +41,26 @@ const AllOrganizations: React.FC = () => {
     // TODO: Implement filter functionality
   };
 
+  const handleStatusToggle = (id: string, status: 'active' | 'inactive') => {
+    console.log('Status toggle:', id, status);
+    // TODO: Implement status toggle functionality
+  };
+
+  const handleActionClick = (action: string, id: string) => {
+    console.log('Action clicked:', action, id);
+    // TODO: Implement action functionality
+  };
+
+  const handlePageChange = (page: number) => {
+    setPagination(prev => ({ ...prev, page }));
+    // TODO: Implement page change functionality
+  };
+
+  const handleRecordsPerPageChange = (size: number) => {
+    setPagination(prev => ({ ...prev, pageSize: size, page: 0 }));
+    // TODO: Implement records per page change functionality
+  };
+
   return (
     <Box sx={{ padding: 3 }}>
       {/* Header Section */}
@@ -46,21 +76,21 @@ const AllOrganizations: React.FC = () => {
         onFilterClick={handleFilterClick}
       />
 
-      {/* Table Section - Will be implemented by another developer */}
+      {/* Organizations Table */}
       <Box sx={{ mt: 3 }}>
-        {/* Placeholder for table component */}
-        <Box
-          sx={{
-            padding: 3,
-            border: '1px dashed #E7E9EB',
-            borderRadius: 2,
-            textAlign: 'center',
-            color: '#989998',
-            backgroundColor: '#F9FAF9',
+        <OrganizationsTable
+          data={organizations}
+          loading={loading}
+          onStatusToggle={handleStatusToggle}
+          onActionClick={handleActionClick}
+          pagination={{
+            page: pagination.page,
+            totalPages: pagination.totalPages,
+            totalRecords: pagination.totalRecords,
+            onPageChange: handlePageChange,
+            onRecordsPerPageChange: handleRecordsPerPageChange,
           }}
-        >
-          Table component will be implemented here
-        </Box>
+        />
       </Box>
 
       {/* New Organization Sidebar */}
