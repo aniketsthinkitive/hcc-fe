@@ -23,6 +23,7 @@ import ReferralPage from "../features/referral/pages/ReferralPage";
 import ReportsPage from "../features/reports/pages/ReportsPage";
 import FormPage from "../features/forms/pages/FormPage";
 import AdminPage from "../features/admin/pages/AdminPage";
+import RolesPermissionsList from "../features/admin/pages/Roles&PermissionsList";
 import IntakeAppointmentPage from "../features/appointment/pages/IntakeAppointmentPage";
 import IntakeAppointmentSuccessPage from "../features/appointment/pages/IntakeAppointmentSuccessPage";
 import OfficeInformationPage from "../features/admin/pages/OfficeInformationPage";
@@ -101,6 +102,9 @@ const AppRoutes: React.FC = () => {
         <Route path="settings" element={<AdminPage />} />
 
         <Route path="office-information" element={<OfficeInformationPage />} />
+        {/* Roles & Permissions */}
+        <Route path="roles-permissions" element={<RolesPermissionsList />} />
+
         {/* Profile */}
         <Route path="profile" element={<div>Profile Page - Coming Soon</div>} />
       </Route>
