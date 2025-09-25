@@ -243,7 +243,7 @@ const RolesPermissionsList: React.FC = () => {
           onClick={() => setIsNewRoleModalOpen(true)}
           sx={{
             width: { xs: '100%', sm: 'auto' },
-            minWidth: { xs: 'auto', sm: '120px' },
+            minWidth: { xs: 'auto', sm: '140px' },
           } as any}
         >
           New Role
@@ -391,7 +391,7 @@ const RolesPermissionsList: React.FC = () => {
               }}
               sx={{
                 width: isMobile ? '100%' : 'auto',
-                minWidth: isMobile ? 'auto' : '100px',
+                minWidth: isMobile ? 'auto' : '120px',
               }}
             >
               Select All
@@ -404,7 +404,7 @@ const RolesPermissionsList: React.FC = () => {
               onClick={handleCancelChanges}
               sx={{
                 width: isMobile ? '100%' : 'auto',
-                minWidth: isMobile ? 'auto' : '100px',
+                minWidth: isMobile ? 'auto' : '120px',
               }}
             >
               Cancel
@@ -418,7 +418,7 @@ const RolesPermissionsList: React.FC = () => {
               disabled={changesCount === 0}
               sx={{
                 width: isMobile ? '100%' : 'auto',
-                minWidth: isMobile ? 'auto' : '120px',
+                minWidth: isMobile ? 'auto' : '140px',
               }}
             >
               Save Changes
@@ -693,7 +693,7 @@ const RolesPermissionsList: React.FC = () => {
                     borderRadius: '6px',
                     backgroundColor: '#FFFFFF',
                     border: '1px solid #CDD0CD',
-                    height: { xs: '40px', sm: '44px' },
+                    height: { xs: '32px', sm: '38px' },
                     '&:hover': {
                       borderColor: '#439322',
                     },
@@ -706,7 +706,7 @@ const RolesPermissionsList: React.FC = () => {
                     fontFamily: '"Helvetica Neue", "Inter", Helvetica, Arial, sans-serif',
                     fontSize: { xs: '13px', sm: '14px' },
                     color: '#2C2D2C',
-                    height: { xs: '40px', sm: '44px' },
+                    height: { xs: '32px', sm: '38px' },
                     '&::placeholder': {
                       color: '#A9ACA9',
                     },
@@ -728,7 +728,7 @@ const RolesPermissionsList: React.FC = () => {
         >
           <CustomButton
             variant="secondary"
-            size={isMobile ? "md" : "lg"}
+            size={isMobile ? "sm" : "md"}
             onClick={() => setIsNewRoleModalOpen(false)}
             sx={{
               width: isMobile ? '100%' : 'auto',
@@ -739,7 +739,7 @@ const RolesPermissionsList: React.FC = () => {
           </CustomButton>
           <CustomButton
             variant="primary"
-            size={isMobile ? "md" : "lg"}
+            size={isMobile ? "sm" : "md"}
             onClick={handleCreateNewRole}
             disabled={!newRoleType || !newRoleName}
             sx={{
