@@ -16,9 +16,9 @@ export const selectInputStyle = {
     border: "1px solid #ccc" /* 1px solid light grey border */,
   },
   //border: `0px solid ${theme.palette.grey[400]}`,
-  height: "44px", // Matches button medium size height
+  height: "38px", // Matches button medium size height
   width: "100%",
-  borderRadius: "4px",
+  borderRadius: "6px", // Match button border radius
   //boxShadow: "0 0 6px 0 rgba(10, 10, 10, 10 )",
 
   ".css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input": {

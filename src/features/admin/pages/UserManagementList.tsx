@@ -776,7 +776,6 @@ const UserManagementList: React.FC = () => {
           backgroundColor: '#FAFAFA',
           width: '100%',
           boxSizing: 'border-box',
-          borderBottom: '1px solid #E2E5E8',
           flexDirection: { xs: 'column', sm: 'row' },
           gap: { xs: 2, sm: 0 },
           flexShrink: 0, // Prevent shrinking
