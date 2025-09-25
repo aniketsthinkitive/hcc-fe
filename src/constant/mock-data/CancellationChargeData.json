@@ -1,0 +1,35 @@
+[
+  {
+    "id": "1",
+    "chargeName": "Late Cancellation Fee"
+  },
+  {
+    "id": "2",
+    "chargeName": "No Show Fee"
+    
+  },
+  {
+    "id": "3",
+    "chargeName": "Same Day Cancellation"
+  },
+  {
+    "id": "4",
+    "chargeName": "Emergency Cancellation"
+  },
+  {
+    "id": "5",
+    "chargeName": "Weekend Cancellation"
+  },
+  {
+    "id": "6",
+    "chargeName": "Multiple Cancellation Fee"
+  },
+  {
+    "id": "7",
+    "chargeName": "Holiday Cancellation"
+  },
+  {
+    "id": "8",
+    "chargeName": "Group Session Cancellation"
+  }
+]
