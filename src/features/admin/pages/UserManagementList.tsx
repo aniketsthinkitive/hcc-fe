@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -11,18 +11,21 @@ import {
   TableRow,
   IconButton,
   Tooltip,
-  Switch,
+  TextField,
+  InputAdornment,
   useTheme,
   useMediaQuery,
+  Popover,
+  Portal,
 } from '@mui/material';
 import {
   Add as AddIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  FilterAlt as FilterIcon,
+  EditOutlined as EditIcon,
+  DeleteOutlined as DeleteIcon,
+  FilterAltOutlined as FilterIcon,
+  Search as SearchIcon,
 } from '@mui/icons-material';
 import CustomButton from '../../../components/custom-buttons/custom-buttons';
-import CustomInput from '../../../components/custom-input/custom-input';
 import {
   heading,
   tableCellCss,
@@ -30,9 +33,15 @@ import {
   tableContainerCss,
 } from '../../../components/common-table/widgets/common-table-widgets';
 import TableSkeleton from '../../../components/common-table/TableSkeleton';
+import Paginator from '../../../components/pagination/pagination';
+import CustomFilterSort, { type FilterField } from '../../../components/custom-filter-sort/custom-filter-sort';
+import AddNewUserDrawer from '../components/AddNewUserDrawer';
+import EditNewUserDrawer from '../components/EditNewUserDrawer';
+import { type UserFormData } from '../components/AddNewUser';
+import { type UserData } from '../components/EditNewUser';
 
 // Mock user data
-const mockUsers = [
+const mockUsers: UserData[] = [
   {
     id: 1,
     name: 'Lane Devon',
@@ -44,6 +53,15 @@ const mockUsers = [
     office: 'Main',
     status: false,
     organization: 'All',
+    namePrefix: 'Dr.',
+    firstName: 'Lane',
+    lastName: 'Devon',
+    title: 'Doctor',
+    phoneNumbers: [
+      { number: '(239) 555-0108', extension: '123', use: 'office' }
+    ],
+    lastLoginAttempt: '03/21/2025 11:00 AM',
+    passwordDaysLeft: 12,
   },
   {
     id: 2,
@@ -56,6 +74,15 @@ const mockUsers = [
     office: 'Main',
     status: true,
     organization: 'All',
+    namePrefix: 'Mr.',
+    firstName: 'Fisher',
+    lastName: 'Cody',
+    title: 'Manager',
+    phoneNumbers: [
+      { number: '(629) 555-0129', extension: '456', use: 'private' }
+    ],
+    lastLoginAttempt: '03/20/2025 09:30 AM',
+    passwordDaysLeft: 8,
   },
   {
     id: 3,
@@ -68,6 +95,15 @@ const mockUsers = [
     office: 'Main',
     status: false,
     organization: 'All',
+    namePrefix: 'Ms.',
+    firstName: 'Cooper',
+    lastName: 'Jane',
+    title: 'Administrator',
+    phoneNumbers: [
+      { number: '(308) 555-0121', extension: '789', use: 'office' }
+    ],
+    lastLoginAttempt: '03/19/2025 14:15 PM',
+    passwordDaysLeft: 15,
   },
   {
     id: 4,
@@ -80,6 +116,15 @@ const mockUsers = [
     office: 'Branch A',
     status: true,
     organization: 'Healthcare Corp',
+    namePrefix: 'Ms.',
+    firstName: 'Sarah',
+    lastName: 'Johnson',
+    title: 'Receptionist',
+    phoneNumbers: [
+      { number: '(555) 123-4567', extension: '101', use: 'office' }
+    ],
+    lastLoginAttempt: '03/21/2025 08:45 AM',
+    passwordDaysLeft: 5,
   },
   {
     id: 5,
@@ -92,6 +137,15 @@ const mockUsers = [
     office: 'Main',
     status: true,
     organization: 'All',
+    namePrefix: 'Mr.',
+    firstName: 'Michael',
+    lastName: 'Chen',
+    title: 'System Admin',
+    phoneNumbers: [
+      { number: '(555) 987-6543', extension: '202', use: 'private' }
+    ],
+    lastLoginAttempt: '03/21/2025 16:20 PM',
+    passwordDaysLeft: 20,
   },
 ];
 
@@ -108,6 +162,72 @@ const tableHeaders = [
   { id: 'actions', label: 'Action', width: '7%' },
 ];
 
+// Filter fields for user management
+const filterFields: FilterField[] = [
+  {
+    id: 'name',
+    label: 'Name',
+    type: 'text',
+    placeholder: 'Enter name',
+  },
+  {
+    id: 'username',
+    label: 'Username',
+    type: 'text',
+    placeholder: 'Enter username',
+  },
+  {
+    id: 'role',
+    label: 'Role/Preset',
+    type: 'select',
+    placeholder: 'Select role',
+    options: [
+      { value: 'Clinician', label: 'Clinician' },
+      { value: 'Superuser', label: 'Superuser' },
+      { value: 'Administrator', label: 'Administrator' },
+      { value: 'Receptionist', label: 'Receptionist' },
+      { value: 'Admin', label: 'Admin' },
+    ],
+  },
+  {
+    id: 'userEmail',
+    label: 'User Email',
+    type: 'text',
+    placeholder: 'Enter email',
+  },
+  {
+    id: 'office',
+    label: 'Office',
+    type: 'select',
+    placeholder: 'Select office',
+    options: [
+      { value: 'Main', label: 'Main' },
+      { value: 'Branch A', label: 'Branch A' },
+      { value: 'Branch B', label: 'Branch B' },
+    ],
+  },
+  {
+    id: 'status',
+    label: 'Status',
+    type: 'select',
+    placeholder: 'Select status',
+    options: [
+      { value: 'active', label: 'Active' },
+      { value: 'inactive', label: 'Inactive' },
+    ],
+  },
+  {
+    id: 'organization',
+    label: 'Organization',
+    type: 'select',
+    placeholder: 'Select organization',
+    options: [
+      { value: 'All', label: 'All' },
+      { value: 'Healthcare Corp', label: 'Healthcare Corp' },
+    ],
+  },
+];
+
 const UserManagementList: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Below 1024px
@@ -115,6 +235,15 @@ const UserManagementList: React.FC = () => {
   const [users, setUsers] = useState(mockUsers);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [recordsPerPage, setRecordsPerPage] = useState(5);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [activeFilterField, setActiveFilterField] = useState<string>('');
+  const [appliedFilters, setAppliedFilters] = useState<Record<string, string>>({});
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [isEditUserOpen, setIsEditUserOpen] = useState(false);
+  const [selectedUserForEdit, setSelectedUserForEdit] = useState<UserData | null>(null);
 
   const handleStatusToggle = (userId: number) => {
     setUsers(prevUsers =>
@@ -125,8 +254,11 @@ const UserManagementList: React.FC = () => {
   };
 
   const handleEditUser = (userId: number) => {
-    // Edit logic would go here
-    console.log('Edit user:', userId);
+    const userToEdit = users.find(user => user.id === userId);
+    if (userToEdit) {
+      setSelectedUserForEdit(userToEdit);
+      setIsEditUserOpen(true);
+    }
   };
 
   const handleDeleteUser = (userId: number) => {
@@ -135,23 +267,144 @@ const UserManagementList: React.FC = () => {
   };
 
   const handleAddNewUser = () => {
-    // Add new user logic would go here
-    console.log('Add new user');
+    setIsAddUserOpen(true);
   };
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.userEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.alertEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.office.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.organization.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleCloseAddUser = () => {
+    setIsAddUserOpen(false);
+  };
+
+  const handleSubmitNewUser = (data: UserFormData) => {
+    console.log('New user data:', data);
+    // Here you would typically make an API call to create the user
+    // For now, we'll just log the data and close the drawer
+    setIsAddUserOpen(false);
+  };
+
+  const handleCloseEditUser = () => {
+    setIsEditUserOpen(false);
+    setSelectedUserForEdit(null);
+  };
+
+  const handleSubmitEditUser = (data: UserFormData) => {
+    console.log('Edit user data:', data);
+    // Here you would typically make an API call to update the user
+    // For now, we'll just log the data and close the drawer
+    setIsEditUserOpen(false);
+    setSelectedUserForEdit(null);
+  };
+
+  // Filter data based on search term and applied filters
+  const filteredUsers = useMemo(() => {
+    let filtered = users;
+
+    // Apply search term filter
+    if (searchTerm) {
+      filtered = filtered.filter(user =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.userEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.alertEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.office.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.organization.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Apply additional filters
+    Object.entries(appliedFilters).forEach(([filterKey, filterValue]) => {
+      if (filterValue.trim()) {
+        filtered = filtered.filter(user => {
+          switch (filterKey) {
+            case 'name':
+              return user.name.toLowerCase().includes(filterValue.toLowerCase());
+            case 'username':
+              return user.username.toLowerCase().includes(filterValue.toLowerCase());
+            case 'role':
+              return user.role === filterValue;
+            case 'userEmail':
+              return user.userEmail.toLowerCase().includes(filterValue.toLowerCase());
+            case 'office':
+              return user.office === filterValue;
+            case 'status':
+              const isActive = filterValue === 'active';
+              return user.status === isActive;
+            case 'organization':
+              return user.organization === filterValue;
+            default:
+              return true;
+          }
+        });
+      }
+    });
+
+    return filtered;
+  }, [users, searchTerm, appliedFilters]);
+
+  // Paginate the filtered data
+  const paginatedUsers = useMemo(() => {
+    const startIndex = currentPage * recordsPerPage;
+    const endIndex = startIndex + recordsPerPage;
+    return filteredUsers.slice(startIndex, endIndex);
+  }, [filteredUsers, currentPage, recordsPerPage]);
+
+  // Calculate pagination values
+  const totalPages = Math.ceil(filteredUsers.length / recordsPerPage);
+
+  const handlePageChange = (_event: React.ChangeEvent<unknown> | null, page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
+    setRecordsPerPage(newRecordsPerPage);
+    setCurrentPage(0); // Reset to first page when changing records per page
+  };
+
+  // Filter handlers
+  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setFilterAnchorEl(event.currentTarget);
+    setIsFilterOpen(true);
+    if (!activeFilterField && filterFields.length > 0) {
+      setActiveFilterField(filterFields[0].id);
+    }
+  };
+
+  const handleFilterFieldChange = (fieldId: string) => {
+    setActiveFilterField(fieldId);
+  };
+
+  const handleFilterValueChange = (_fieldId: string, _value: string) => {
+    // This will be handled by the CustomFilterSort component internally
+  };
+
+  const handleApplyFilters = (filters: Record<string, string>) => {
+    setAppliedFilters(filters);
+    setCurrentPage(0); // Reset to first page when applying filters
+    setIsFilterOpen(false);
+  };
+
+  const handleClearAllFilters = () => {
+    setAppliedFilters({});
+    setCurrentPage(0); // Reset to first page when clearing filters
+  };
+
+  const handleCancelFilters = () => {
+    setIsFilterOpen(false);
+    setFilterAnchorEl(null);
+  };
 
   return (
-    <Box sx={{ backgroundColor: '#F9FAF9', minHeight: '100vh' }}>
-      {/* Header */}
+    <>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '93vh', // Use full viewport height
+        backgroundColor: '#F6F6F6', // Background/BG 1 from Figma
+        overflow: 'hidden', // Prevent page-level scrolling
+      }}
+    >
+      {/* Header with title and New User button */}
       <Box 
         sx={{ 
           display: 'flex', 
@@ -164,6 +417,7 @@ const UserManagementList: React.FC = () => {
           borderBottom: '1px solid #E2E5E8',
           flexDirection: { xs: 'column', sm: 'row' },
           gap: { xs: 2, sm: 0 },
+          flexShrink: 0, // Prevent shrinking
         }}
       >
         <Typography
@@ -194,94 +448,179 @@ const UserManagementList: React.FC = () => {
         </CustomButton>
       </Box>
 
-      {/* Search and Filter Section */}
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: { xs: 'stretch', sm: 'center' },
-          flexDirection: { xs: 'column', sm: 'row' },
-          padding: { xs: '16px', sm: '16px' },
-          backgroundColor: '#FFFFFF',
-          width: '100%',
-          boxSizing: 'border-box',
-          borderBottom: '1px solid #E2E5E8',
-          gap: { xs: 2, sm: 0 },
+      {/* Divider line */}
+      <Box
+        sx={{
+          height: '1px',
+          backgroundColor: '#E7E9EB', // Border/02 from Figma
+          flexShrink: 0, // Prevent shrinking
         }}
-      >
-        <Box sx={{ 
-          display: 'flex', 
-          gap: { xs: '16px', sm: '20px' }, 
-          alignItems: 'center',
-          flexDirection: { xs: 'column', sm: 'row' },
-          width: { xs: '100%', sm: 'auto' },
-        }}>
-          <Box sx={{ 
-            display: 'flex', 
-            alignItems: 'center',
-            gap: '8px',
-            width: { xs: '100%', sm: '320px' },
-          }}>
-            <CustomInput
-              placeholder="Search"
-              name="search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              hasStartSearchIcon={true}
-            />
-          </Box>
-          <Box sx={{ 
-            display: 'flex', 
-            alignItems: 'center',
-            gap: '8px',
-            width: { xs: '100%', sm: 'auto' },
-          }}>
-            <CustomButton
-              variant="secondary"
-              size={isMobile ? "sm" : "md"}
-              icon={<FilterIcon />}
-              iconPosition="left"
+      />
+
+      {/* Search and Filter Section */}
+      <Box sx={{ flexShrink: 0 }}> {/* Prevent shrinking */}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'stretch',
+            alignItems: 'stretch',
+            padding: '16px',
+            gap: '109px', // Gap from Figma design
+            backgroundColor: '#FFFFFF',
+            borderBottom: '1px solid #E2E5E8',
+          }}
+        >
+          {/* Search Section */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              flex: 1,
+            }}
+          >
+            <Box
               sx={{
-                width: isMobile ? '100%' : 'auto',
-                minWidth: isMobile ? 'auto' : '100px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                flex: 1,
               }}
             >
-              Filter
-            </CustomButton>
+              <TextField
+                placeholder="Search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                size="small"
+                sx={{
+                  width: '320px',
+                  '& .MuiOutlinedInput-root': {
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: '6px',
+                    border: '1px solid #CDD0CD', // Neutral/20
+                    boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)', // Shadow/xs
+                    '&:hover': {
+                      borderColor: '#A9ACA9', // Neutral/40
+                    },
+                    '&.Mui-focused': {
+                      borderColor: '#439322', // Primary color
+                      boxShadow: '0px 0px 0px 3px rgba(67, 147, 34, 0.1)',
+                    },
+                    '& fieldset': {
+                      border: 'none', // Remove default border
+                    },
+                  },
+                  '& .MuiOutlinedInput-input': {
+                    padding: '8px 10px',
+                    fontSize: '14px',
+                    fontWeight: 400,
+                    lineHeight: '1.6',
+                    color: '#A9ACA9', // Neutral/40 for placeholder
+                    fontFamily: '"Helvetica Neue", Arial, sans-serif',
+                    '&::placeholder': {
+                      color: '#A9ACA9', // Neutral/40
+                      opacity: 1,
+                    },
+                  },
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon 
+                        sx={{ 
+                          width: 18, 
+                          height: 18, 
+                          color: '#757775' // Neutral/60
+                        }} 
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              {/* Filter Button */}
+              <IconButton
+                onClick={handleFilterClick}
+                sx={{
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #C5C9C5', // Neutral/30
+                  borderRadius: '6px',
+                  padding: '10px',
+                  boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)', // Shadow/xs
+                  '&:hover': {
+                    backgroundColor: '#F9FAF9', // Neutral/1
+                    borderColor: '#A9ACA9', // Neutral/40
+                  },
+                }}
+              >
+                <FilterIcon 
+                  sx={{ 
+                    width: 18, 
+                    height: 18, 
+                    color: '#2C2D2C' // Neutral/80
+                  }} 
+                />
+              </IconButton>
+            </Box>
           </Box>
         </Box>
       </Box>
 
-      {/* Main Content */}
-      <Box sx={{ p: 0 }}>
+      {/* Table with Fixed Pagination */}
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0, // Allow flex child to shrink below content size
+        }}
+      >
         {/* Users Table */}
-        <Paper sx={{ 
-          overflow: 'hidden', 
-          boxShadow: 'none', 
-          border: 'none',
-          width: '100%',
-        }}>
-          <TableContainer 
-            sx={{ 
-              ...tableContainerCss, 
-              border: 'none',
-              overflowX: 'auto',
-              '&::-webkit-scrollbar': {
-                height: '8px',
-              },
-              '&::-webkit-scrollbar-track': {
-                backgroundColor: '#f1f1f1',
-                borderRadius: '4px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                backgroundColor: '#c1c1c1',
-                borderRadius: '4px',
-                '&:hover': {
-                  backgroundColor: '#a8a8a8',
-                },
-              },
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "#FFFFFF",
+            height: "100%",
+            position: "relative",
+            overflow: "hidden", // Prevent container from scrolling
+          }}
+        >
+          {/* Table Container - Only this part scrolls */}
+          <Box
+            sx={{
+              flex: 1,
+              overflow: "auto",
+              minHeight: 0, // Allow flex child to shrink
             }}
           >
+            <Paper sx={{ 
+              overflow: 'hidden', 
+              boxShadow: 'none', 
+              border: 'none',
+              width: '100%',
+            }}>
+              <TableContainer 
+                sx={{ 
+                  ...tableContainerCss, 
+                  border: 'none',
+                  overflowX: 'auto',
+                  '&::-webkit-scrollbar': {
+                    height: '8px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    backgroundColor: '#f1f1f1',
+                    borderRadius: '4px',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    backgroundColor: '#c1c1c1',
+                    borderRadius: '4px',
+                    '&:hover': {
+                      backgroundColor: '#a8a8a8',
+                    },
+                  },
+                }}
+              >
             {isLoading ? (
               <TableSkeleton 
                 headers={tableHeaders}
@@ -309,8 +648,10 @@ const UserManagementList: React.FC = () => {
                         minWidth: { xs: '150px', sm: '15%' },
                         position: 'sticky',
                         left: 0,
-                        backgroundColor: '#FFFFFF',
-                        zIndex: 1,
+                        top: 0,
+                        backgroundColor: '#F6F6F6',
+                        zIndex: 3,
+                        
                       }}
                       align="left"
                     >
@@ -321,6 +662,7 @@ const UserManagementList: React.FC = () => {
                           lineHeight: '1.2',
                           color: '#757775',
                           fontFamily: '"Helvetica Neue", Arial, sans-serif',
+                          position: 'sticky',
                         }}
                       >
                         Name
@@ -331,6 +673,11 @@ const UserManagementList: React.FC = () => {
                       align="left"
                       sx={{
                         ...heading,
+                        position: 'sticky',
+                        left: 0,
+                        top: 0,
+                        backgroundColor: '#F6F6F6',
+                        zIndex: 3,
                         width: { xs: '120px', sm: '12%' },
                         minWidth: { xs: '120px', sm: '12%' },
                       }}
@@ -497,7 +844,7 @@ const UserManagementList: React.FC = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredUsers.map((user) => (
+                  {paginatedUsers.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell 
                         sx={{
@@ -565,26 +912,51 @@ const UserManagementList: React.FC = () => {
                           justifyContent: 'center',
                           gap: 1,
                         }}>
-                          <Switch
-                            checked={user.status}
-                            onChange={() => handleStatusToggle(user.id)}
-                            size="small"
+                          <Box
                             sx={{
-                              '& .MuiSwitch-switchBase.Mui-checked': {
-                                color: '#439322',
-                                '& + .MuiSwitch-track': {
-                                  backgroundColor: '#439322',
-                                },
-                              },
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              padding: '4px 6px',
+                              backgroundColor: '#F9FAF9',
+                              borderRadius: '40px',
+                              cursor: 'pointer',
                             }}
-                          />
-                          <Typography sx={{
-                            fontSize: { xs: '12px', sm: '13px' },
-                            color: '#424342',
-                            fontFamily: '"Helvetica Neue", Arial, sans-serif',
-                          }}>
-                            {user.status ? 'Active' : 'Inactive'}
-                          </Typography>
+                            onClick={() => handleStatusToggle(user.id)}
+                          >
+                            <Box
+                              sx={{
+                                width: '36px',
+                                height: '20px',
+                                backgroundColor: user.status ? '#439322' : '#DDE0DD',
+                                borderRadius: '12px',
+                                padding: '2px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                transition: 'all 0.2s ease',
+                                justifyContent: user.status ? 'flex-end' : 'flex-start',
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  width: '16px',
+                                  height: '16px',
+                                  backgroundColor: '#FFFFFF',
+                                  borderRadius: '50%',
+                                  boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.06), 0px 1px 3px 0px rgba(16, 24, 40, 0.1)',
+                                }}
+                              />
+                            </Box>
+                            <Typography sx={{
+                              fontSize: { xs: '13px', sm: '14px' },
+                              color: '#424342',
+                              fontFamily: '"Helvetica Neue", Arial, sans-serif',
+                              fontWeight: 400,
+                              lineHeight: '1.2',
+                            }}>
+                              {user.status ? 'Active' : 'Inactive'}
+                            </Typography>
+                          </Box>
                         </Box>
                       </TableCell>
                       <TableCell align="left" sx={heading}>
@@ -639,75 +1011,98 @@ const UserManagementList: React.FC = () => {
                 </TableBody>
               </Table>
             )}
-          </TableContainer>
-        </Paper>
-
-        {/* Pagination Section */}
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            padding: { xs: '12px 8px 12px 16px', sm: '12px 8px 12px 16px' },
-            backgroundColor: '#FFFFFF',
-            borderTop: '1px solid #E7E9EB',
-            flexDirection: { xs: 'column', sm: 'row' },
-            gap: { xs: 2, sm: 0 },
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: { xs: '11px', sm: '12px' },
-              color: '#424342',
-              fontFamily: '"Inter", Arial, sans-serif',
-              textAlign: { xs: 'center', sm: 'left' },
-            }}
-          >
-            Showing 1 to {filteredUsers.length} of {filteredUsers.length} entries
-          </Typography>
-          <Box sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: 2,
-            flexDirection: { xs: 'column', sm: 'row' },
-          }}>
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 1,
-            }}>
-              <Typography
-                sx={{
-                  fontSize: { xs: '11px', sm: '12px' },
-                  color: '#424342',
-                  fontFamily: '"Inter", Arial, sans-serif',
-                }}
-              >
-                Rows per page:
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: { xs: '11px', sm: '12px' },
-                  color: '#424342',
-                  fontFamily: '"Inter", Arial, sans-serif',
-                  fontWeight: 500,
-                }}
-              >
-                05
-              </Typography>
-            </Box>
-            {/* Pagination controls would go here */}
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 1,
-            }}>
-              {/* Previous/Next buttons would be implemented here */}
-            </Box>
+              </TableContainer>
+            </Paper>
           </Box>
+
+          {/* Fixed Pagination at Bottom */}
+          {!isLoading && filteredUsers.length > 0 && (
+            <Box
+              sx={{
+                position: "static",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: "#FFFFFF",
+                borderTop: "1px solid #E7E9EB", // Border/02
+                borderRadius: "0px 0px 10px 10px",
+                zIndex: 1000,
+                boxShadow: "0px -2px 8px rgba(0, 0, 0, 0.1)", // Add shadow for better visibility
+                marginTop: "-8px", // Move the pagination box up by 8px
+              }}
+            >
+              <Paginator
+                page={currentPage}
+                totalPages={totalPages}
+                totalRecord={filteredUsers.length}
+                onPageChange={handlePageChange}
+                onRecordsPerPageChange={handleRecordsPerPageChange}
+                defaultSize={recordsPerPage}
+              />
+            </Box>
+          )}
         </Box>
       </Box>
+
+      {/* Filter Popover */}
+      <Popover
+        open={isFilterOpen}
+        anchorEl={filterAnchorEl}
+        onClose={handleCancelFilters}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        PaperProps={{
+          sx: {
+            mt: 1,
+            borderRadius: '8px',
+            boxShadow: '0px 2px 4px -2px rgba(16, 24, 40, 0.06), 0px 4px 8px -2px rgba(16, 24, 40, 0.1), 0px 2px 4px 0px rgba(0, 0, 0, 0.06), 0px 4px 8px 0px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #DDE0DD',
+            overflow: 'hidden',
+          },
+        }}
+      >
+        <CustomFilterSort
+          type="filter"
+          size="md"
+          filterFields={filterFields}
+          activeFilterField={activeFilterField}
+          onFilterFieldChange={handleFilterFieldChange}
+          onFilterValueChange={handleFilterValueChange}
+          onClearAll={handleClearAllFilters}
+          onApply={handleApplyFilters}
+          onCancel={handleCancelFilters}
+        />
+      </Popover>
+
     </Box>
+
+    {/* Add New User Drawer - Rendered in Portal to ensure proper z-index */}
+    <Portal>
+      <AddNewUserDrawer
+        open={isAddUserOpen}
+        onSubmit={handleSubmitNewUser}
+        onClose={handleCloseAddUser}
+      />
+    </Portal>
+
+    {/* Edit User Drawer - Rendered in Portal to ensure proper z-index */}
+    <Portal>
+      {selectedUserForEdit && (
+        <EditNewUserDrawer
+          open={isEditUserOpen}
+          userData={selectedUserForEdit}
+          onSubmit={handleSubmitEditUser}
+          onClose={handleCloseEditUser}
+        />
+      )}
+    </Portal>
+    </>
   );
 };
 
