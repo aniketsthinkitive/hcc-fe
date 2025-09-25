@@ -6,10 +6,11 @@ type ConfirmationPopUpProps = {
   onClose: () => void;
   onConfirm: () => void;
   message: string;
+  sx?: object;
 };
 
 const ConfirmationPopUp = (props: ConfirmationPopUpProps) => {
-  const { open, onClose, onConfirm, message } = props;
+  const { open, onClose, onConfirm, message, sx } = props;
   return (
     <CustomDialog
       width={"400px"}
@@ -17,6 +18,7 @@ const ConfirmationPopUp = (props: ConfirmationPopUpProps) => {
       buttonName={[]}
       open={open}
       onClose={() => onClose()}
+      sx={sx}
     >
       <Grid container flexDirection={"column"} rowGap={2}>
         <Typography variant="inputTitle">

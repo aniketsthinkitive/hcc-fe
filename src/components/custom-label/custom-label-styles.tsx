@@ -1,6 +1,6 @@
 export const customLabelStyles = {
   headerLabel: {
-    color: "#1A1A1A",
+    color: "#757775",
   },
   required: {
     color: "red",

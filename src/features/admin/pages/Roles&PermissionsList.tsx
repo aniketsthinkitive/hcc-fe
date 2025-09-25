@@ -187,11 +187,13 @@ const RolesPermissionsList: React.FC = () => {
     
     if (isEditMode) {
       return (
-        <CustomCheckbox
-          checked={hasPermission}
-          onChange={(checked) => handlePermissionChange(featureId, permission, checked)}
-          size="md"
-        />
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <CustomCheckbox
+            checked={hasPermission}
+            onChange={(checked) => handlePermissionChange(featureId, permission, checked)}
+            size="md"
+          />
+        </Box>
       );
     }
 

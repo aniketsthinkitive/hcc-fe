@@ -25,6 +25,7 @@ import FormPage from "../features/forms/pages/FormPage";
 import AdminPage from "../features/admin/pages/AdminPage";
 import AllOrganizations from "../features/admin/pages/AllOrganizations";
 import RolesPermissionsList from "../features/admin/pages/Roles&PermissionsList";
+import UserManagementList from "../features/admin/pages/UserManagementList";
 import IntakeAppointmentPage from "../features/appointment/pages/IntakeAppointmentPage";
 import IntakeAppointmentSuccessPage from "../features/appointment/pages/IntakeAppointmentSuccessPage";
 import OfficeInformationPage from "../features/admin/pages/OfficeInformationPage";
@@ -102,6 +103,9 @@ const AppRoutes: React.FC = () => {
         <Route path="discharge-reasons" element={<DischargeStatusPage />} />
         {/* Roles & Permissions */}
         <Route path="roles-permissions" element={<RolesPermissionsList />} />
+
+        {/* User Management */}
+        <Route path="user-management" element={<UserManagementList />} />
         {/* Profile */}
         <Route path="profile" element={<div>Profile Page - Coming Soon</div>} />
       </Route>

@@ -30,7 +30,7 @@ const AdminDropdown: React.FC<AdminDropdownProps> = ({ anchorEl, open, onClose }
     { label: 'Task List for Clients', path: '/admin/task-list-clients' },
     { label: 'Task for Counselor', path: '/admin/task-counselor' },
     { label: 'Roles & Permissions', path: '/admin/roles-permissions' },
-    { label: 'User Information', path: '/admin/user-information' },
+    { label: 'User Management', path: '/admin/user-management' },
   ];
 
   const handleMenuItemClick = (path: string) => {
