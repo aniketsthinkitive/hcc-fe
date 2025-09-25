@@ -35,6 +35,7 @@ interface CustomSelectProps {
       style?: {
         maxHeight: number;
         width: number;
+        zIndex?: number;
       };
     };
   };

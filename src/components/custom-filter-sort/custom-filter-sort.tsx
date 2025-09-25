@@ -10,7 +10,7 @@ import {
 export interface FilterField {
   id: string;
   label: string;
-  type: 'text' | 'select' | 'date' | 'number';
+  type: 'text' | 'select' | 'date' | 'number' | 'archive';
   placeholder?: string;
   options?: { value: string; label: string }[];
   value?: string;
@@ -151,6 +151,34 @@ export default function CustomFilterSort({
 
     const activeField = filterFields.find(field => field.id === activeFilterField);
     if (!activeField) return null;
+
+    // Handle archive filter type
+    if (activeField.type === 'archive') {
+      return (
+        <Box sx={styles.filterSection}>
+          <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <Typography sx={{ fontSize: '12px', fontWeight: 500, color: '#424342' }}>
+              {activeField.label}
+            </Typography>
+            <select
+              value={localFilterValues[activeField.id] || 'all'}
+              onChange={(e) => handleFilterValueChange(activeField.id, e.target.value)}
+              style={styles.filterInput}
+            >
+              <option value="all">All</option>
+              <option value="unarchived">Unarchived</option>
+              <option value="archived">Archived</option>
+            </select>
+            <button
+              onClick={() => handleFilterValueChange(activeField.id, 'all')}
+              style={styles.filterResetButton}
+            >
+              Reset
+            </button>
+          </Box>
+        </Box>
+      );
+    }
 
     return (
       <Box sx={styles.filterSection}>
