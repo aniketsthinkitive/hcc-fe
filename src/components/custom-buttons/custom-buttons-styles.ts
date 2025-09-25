@@ -278,7 +278,7 @@ export const getButtonStyles = (
     },
   };
 
-  const currentVariant = variantStyles[variant];
+  const currentVariant = variantStyles[variant] || variantStyles.primary;
 
   return {
     button: {

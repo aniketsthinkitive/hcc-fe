@@ -96,6 +96,8 @@ const CustomDrawer = (props: React.PropsWithChildren<DrawerProps>) => {
                 ? drawerPadding
                 : "50px",
             overflowX: "hidden",
+            overflowY: "auto",
+            height: "calc(100vh - 120px)", // Account for header height
           }}
         >
           {props.children}

@@ -9,20 +9,20 @@ import CustomLabel from '../../../components/custom-label/custom-label';
 import CustomDialog from '../../../components/custom-dialog/custom-dialog';
 
 // Form validation schema - simplified to one field
-const cancellationChargeFormSchema = yup.object({
+const DischargeStatusFormSchema = yup.object({
   chargeName: yup.string().required('Charge Name is required'),
 });
 
-export interface CancellationChargeFormData {
+export interface DischargeStatusFormData {
   chargeName: string;
 }
 
 interface AddNewDischargeModalProps {
   open: boolean;
   isEdit?: boolean;
-  initialData?: Partial<CancellationChargeFormData>;
+  initialData?: Partial<DischargeStatusFormData>;
   onClose: () => void;
-  onSubmit: (data: CancellationChargeFormData) => void;
+  onSubmit: (data: DischargeStatusFormData) => void;
 }
 
 const AddNewDischargeModal: React.FC<AddNewDischargeModalProps> = ({
@@ -42,9 +42,9 @@ const AddNewDischargeModal: React.FC<AddNewDischargeModalProps> = ({
     setValue,
     reset,
     formState: { errors },
-  } = useForm<CancellationChargeFormData>({
+  } = useForm<DischargeStatusFormData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: yupResolver(cancellationChargeFormSchema) as any,
+    resolver: yupResolver(DischargeStatusFormSchema) as any,
     defaultValues: initialValues,
     mode: 'onChange',
   });
@@ -53,9 +53,9 @@ const AddNewDischargeModal: React.FC<AddNewDischargeModalProps> = ({
   useEffect(() => {
     if (isEdit && initialData) {
       Object.keys(initialData).forEach((key) => {
-        const value = initialData[key as keyof CancellationChargeFormData];
+        const value = initialData[key as keyof DischargeStatusFormData];
         if (value !== undefined) {
-          setValue(key as keyof CancellationChargeFormData, value);
+          setValue(key as keyof DischargeStatusFormData, value);
         }
       });
     } else {
@@ -63,7 +63,7 @@ const AddNewDischargeModal: React.FC<AddNewDischargeModalProps> = ({
     }
   }, [isEdit, initialData, setValue, reset, initialValues]);
 
-  const handleFormSubmit = (data: CancellationChargeFormData) => {
+  const handleFormSubmit = (data: DischargeStatusFormData) => {
     onSubmit(data);
     onClose();
   };

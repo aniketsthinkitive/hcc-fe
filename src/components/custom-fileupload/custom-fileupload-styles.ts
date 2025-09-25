@@ -69,187 +69,188 @@ export const getFileUploadStyles = (
   // Base styles
   const baseStyles: FileUploadStyles = {
     container: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-      width: '100%',
+      display: "flex",
+      flexDirection: "column",
+      gap: "8px",
+      width: "100%",
     },
     uploadArea: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: config.padding,
-      minHeight: config.minHeight,
-      border: '2px dashed #DDE0DD', // Neutral/10
-      borderRadius: config.borderRadius,
-      backgroundColor: '#FFFFFF',
-      cursor: 'pointer',
-      transition: 'all 0.2s ease-in-out',
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "40px 20px", // Increased padding for better spacing
+      minHeight: "200px", // Increased height to match image
+      border: "2px dashed #DDE0DD", // Neutral/10
+      borderRadius: "12px", // More rounded corners
+      backgroundColor: "#FFFFFF",
+      cursor: "pointer",
+      transition: "all 0.2s ease-in-out",
       fontFamily: baseFontFamily,
-      position: 'relative',
-      overflow: 'hidden',
+      position: "relative",
+      overflow: "hidden",
     },
     uploadAreaHover: {
-      borderColor: '#CDD0CD', // Neutral/20
-      backgroundColor: '#FAFAFA', // Neutral/5
+      borderColor: "#439322", // Green border on hover
+      backgroundColor: "#F8FFF8", // Light green background
     },
     uploadAreaFocus: {
-      borderColor: '#439322', // Primary Green
-      backgroundColor: '#F8FFF8', // Light green background
-      boxShadow: '0 0 0 2px rgba(67, 147, 34, 0.1)',
+      borderColor: "#439322", // Primary Green
+      backgroundColor: "#F8FFF8", // Light green background
+      boxShadow: "0 0 0 2px rgba(67, 147, 34, 0.1)",
     },
     uploadAreaActive: {
-      borderColor: '#439322', // Primary Green
-      backgroundColor: '#F0F8F0', // Slightly darker green
+      borderColor: "#439322", // Primary Green
+      backgroundColor: "#F0F8F0", // Slightly darker green
     },
     uploadAreaDisabled: {
-      borderColor: '#DDE0DD', // Neutral/10
-      backgroundColor: '#F2F2F2', // Neutral/5
-      cursor: 'not-allowed',
+      borderColor: "#DDE0DD", // Neutral/10
+      backgroundColor: "#F2F2F2", // Neutral/5
+      cursor: "not-allowed",
       opacity: 0.6,
     },
     uploadAreaError: {
-      borderColor: '#CA1C1C', // Error Red
-      backgroundColor: '#FFF8F8', // Light red background
+      borderColor: "#CA1C1C", // Error Red
+      backgroundColor: "#FFF8F8", // Light red background
     },
     input: {
-      position: 'absolute',
+      position: "absolute",
       top: 0,
       left: 0,
-      width: '100%',
-      height: '100%',
+      width: "100%",
+      height: "100%",
       opacity: 0,
-      cursor: 'pointer',
-      zIndex: 1,
+      cursor: "pointer",
+      zIndex: 0,
+      pointerEvents: "none",
     },
     label: {
-      fontSize: config.fontSize,
+      fontSize: "16px", // Slightly larger font
       fontWeight: 500,
-      color: '#2C2D2C', // Neutral/80
-      textAlign: 'center',
+      color: "#2C2D2C", // Neutral/80
+      textAlign: "center",
       fontFamily: baseFontFamily,
       lineHeight: 1.5,
       margin: 0,
     },
     labelHover: {
-      color: '#439322', // Primary Green
+      color: "#439322", // Primary Green
     },
     labelDisabled: {
-      color: '#A9ACA9', // Neutral/40
+      color: "#A9ACA9", // Neutral/40
     },
     icon: {
-      fontSize: config.iconSize,
-      color: '#2C2D2C', // Neutral/80
-      marginBottom: '8px',
+      fontSize: "28px", // Larger icon
+      color: "#439322", // Green color for icon
+      marginBottom: "0px", // No margin since we handle it in the circular background
     },
     iconHover: {
-      color: '#439322', // Primary Green
+      color: "#439322", // Primary Green
     },
     iconDisabled: {
-      color: '#A9ACA9', // Neutral/40
+      color: "#A9ACA9", // Neutral/40
     },
     button: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
       padding: config.padding,
       minHeight: config.minHeight,
-      backgroundColor: '#439322', // Primary Green
-      color: '#FFFFFF',
-      border: 'none',
+      backgroundColor: "#439322", // Primary Green
+      color: "#FFFFFF",
+      border: "none",
       borderRadius: config.borderRadius,
       fontSize: config.fontSize,
       fontWeight: 500,
       fontFamily: baseFontFamily,
-      cursor: 'pointer',
-      transition: 'all 0.2s ease-in-out',
-      textDecoration: 'none',
+      cursor: "pointer",
+      transition: "all 0.2s ease-in-out",
+      textDecoration: "none",
     },
     buttonHover: {
-      backgroundColor: '#3A7F1E', // Darker green
+      backgroundColor: "#3A7F1E", // Darker green
     },
     buttonFocus: {
-      backgroundColor: '#3A7F1E', // Darker green
-      boxShadow: '0 0 0 2px rgba(67, 147, 34, 0.2)',
+      backgroundColor: "#3A7F1E", // Darker green
+      boxShadow: "0 0 0 2px rgba(67, 147, 34, 0.2)",
     },
     buttonActive: {
-      backgroundColor: '#2F6B18', // Even darker green
+      backgroundColor: "#2F6B18", // Even darker green
     },
     buttonDisabled: {
-      backgroundColor: '#A9ACA9', // Neutral/40
-      cursor: 'not-allowed',
+      backgroundColor: "#A9ACA9", // Neutral/40
+      cursor: "not-allowed",
       opacity: 0.6,
     },
     fileList: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-      marginTop: '8px',
+      display: "flex",
+      flexDirection: "column",
+      gap: "8px",
+      marginTop: "8px",
     },
     fileItem: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '8px 12px',
-      backgroundColor: '#F8F9F8', // Light background
-      border: '1px solid #E8EBE8', // Light border
-      borderRadius: '4px',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: "8px 12px",
+      backgroundColor: "#F8F9F8", // Light background
+      border: "1px solid #E8EBE8", // Light border
+      borderRadius: "4px",
       fontFamily: baseFontFamily,
     },
     fileName: {
-      fontSize: '14px',
+      fontSize: "14px",
       fontWeight: 500,
-      color: '#2C2D2C', // Neutral/80
+      color: "#2C2D2C", // Neutral/80
       fontFamily: baseFontFamily,
       flex: 1,
-      marginRight: '8px',
+      marginRight: "8px",
     },
     fileSize: {
-      fontSize: '12px',
-      color: '#A9ACA9', // Neutral/40
+      fontSize: "12px",
+      color: "#A9ACA9", // Neutral/40
       fontFamily: baseFontFamily,
-      marginRight: '8px',
+      marginRight: "8px",
     },
     removeButton: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '20px',
-      height: '20px',
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: '50%',
-      cursor: 'pointer',
-      color: '#CA1C1C', // Error Red
-      fontSize: '14px',
-      transition: 'all 0.2s ease-in-out',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "20px",
+      height: "20px",
+      backgroundColor: "transparent",
+      border: "none",
+      borderRadius: "50%",
+      cursor: "pointer",
+      color: "#CA1C1C", // Error Red
+      fontSize: "14px",
+      transition: "all 0.2s ease-in-out",
     },
     progressBar: {
-      width: '100%',
-      height: '4px',
-      backgroundColor: '#E8EBE8', // Light background
-      borderRadius: '2px',
-      overflow: 'hidden',
-      marginTop: '4px',
+      width: "100%",
+      height: "4px",
+      backgroundColor: "#E8EBE8", // Light background
+      borderRadius: "2px",
+      overflow: "hidden",
+      marginTop: "4px",
     },
     progressFill: {
-      height: '100%',
-      backgroundColor: '#439322', // Primary Green
-      transition: 'width 0.3s ease-in-out',
+      height: "100%",
+      backgroundColor: "#439322", // Primary Green
+      transition: "width 0.3s ease-in-out",
     },
     errorMessage: {
-      color: '#CA1C1C', // Error Red
-      fontSize: '12px',
-      marginTop: '4px',
+      color: "#CA1C1C", // Error Red
+      fontSize: "12px",
+      marginTop: "4px",
       fontFamily: baseFontFamily,
       fontWeight: 400,
       lineHeight: 1.2,
     },
     helperText: {
-      color: '#A9ACA9', // Neutral/40
-      fontSize: '12px',
-      marginTop: '4px',
+      color: "#A9ACA9", // Neutral/40
+      fontSize: "14px", // Slightly larger for better readability
+      marginTop: "4px",
       fontFamily: baseFontFamily,
       fontWeight: 400,
       lineHeight: 1.2,

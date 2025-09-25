@@ -22,7 +22,7 @@ const CustomLabel = React.memo<CustomFormLabelProps>(
             lineHeight: 1.75,
           }}
         >
-          {label}
+          {label} 
           {isRequired && <span style={customLabelStyles.required}>*</span>}
         </Typography>
       </Box>
