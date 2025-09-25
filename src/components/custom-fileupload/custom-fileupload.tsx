@@ -148,6 +148,7 @@ export default function CustomFileUpload({
 
   const handleDragOver = (event: DragEvent<HTMLElement>) => {
     event.preventDefault();
+    event.stopPropagation();
     if (!disabled && allowDragDrop) {
       setIsDragOver(true);
     }
@@ -155,11 +156,13 @@ export default function CustomFileUpload({
 
   const handleDragLeave = (event: DragEvent<HTMLElement>) => {
     event.preventDefault();
+    event.stopPropagation();
     setIsDragOver(false);
   };
 
   const handleDrop = (event: DragEvent<HTMLElement>) => {
     event.preventDefault();
+    event.stopPropagation();
     setIsDragOver(false);
     
     if (disabled || !allowDragDrop) return;
@@ -176,8 +179,10 @@ export default function CustomFileUpload({
     onFileRemove?.(fileId);
   };
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    // Only stop propagation if we're actually going to open the file dialog
     if (!disabled && fileInputRef.current) {
+      e.stopPropagation();
       fileInputRef.current.click();
     }
   };
@@ -256,7 +261,7 @@ export default function CustomFileUpload({
       );
     }
 
-    // Default and drag-drop types
+    // Default and drag-drop types - Updated to match the image design
     return (
       <Box
         sx={currentStyles}
@@ -266,19 +271,44 @@ export default function CustomFileUpload({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
+        onMouseDown={(e) => {
+          // Prevent the drawer from closing when clicking on the upload area
+          e.stopPropagation();
+        }}
       >
-        {icon || <CloudUpload sx={iconStyles} />}
-        <Typography sx={labelStyles}>
-          {placeholder}
-        </Typography>
+        {/* Upload Icon with circular background */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '64px',
+            height: '64px',
+            borderRadius: '50%',
+            backgroundColor: 'rgba(67, 147, 34, 0.1)', // Light green background
+            marginBottom: '16px',
+          }}
+        >
+          {icon || <CloudUpload sx={{ ...iconStyles, fontSize: '28px', color: '#439322' }} />}
+        </Box>
+        
+        {/* Main text with color-coded parts */}
+        <Box sx={{ textAlign: 'center', marginBottom: '8px' }}>
+          <Typography sx={labelStyles}>
+            <span style={{ color: '#439322' }}>Click to upload</span>
+            <span style={{ color: '#A9ACA9' }}> or drag and drop</span>
+          </Typography>
+        </Box>
+        
+        {/* File type specifications */}
         {accept && (
           <Typography sx={styles.helperText}>
-            Accepted formats: {accept}
+            {accept.replace(/\./g, '').toUpperCase()}, PNG, JPG or GIF (max. 800x400px)
           </Typography>
         )}
-        {maxFileSize && (
+        {!accept && (
           <Typography sx={styles.helperText}>
-            Max file size: {formatFileSize(maxFileSize)}
+            SVG, PNG, JPG or GIF (max. 800x400px)
           </Typography>
         )}
       </Box>

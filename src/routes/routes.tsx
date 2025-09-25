@@ -30,6 +30,7 @@ import IntakeAppointmentPage from "../features/appointment/pages/IntakeAppointme
 import IntakeAppointmentSuccessPage from "../features/appointment/pages/IntakeAppointmentSuccessPage";
 import OfficeInformationPage from "../features/admin/pages/OfficeInformationPage";
 import DischargeStatusPage from "../features/admin/pages/DischargeStatusPage";
+import CompanyInformationPage from "../features/admin/pages/CompanyInformationPage";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -96,6 +97,7 @@ const AppRoutes: React.FC = () => {
         <Route path="settings" element={<AdminPage />} />
 
         <Route path="/admin/organizations" element={<AllOrganizations />} />
+        <Route path="company-information" element={<CompanyInformationPage />} />
         <Route path="office-information" element={<OfficeInformationPage />} />
 
         <Route path="discharge-reasons" element={<DischargeStatusPage />} />

@@ -4,7 +4,7 @@ import DischargeStatusTable from './DischargeStatusTable';
 import Paginator from '../../../components/pagination/pagination';
 import cancellationChargeData from '../../../constant/mock-data/CancellationChargeData.json';
 
-interface CancellationChargeData {
+interface DischargeStatusData {
   id: string;
   chargeName: string;
   chargeType: 'fixed' | 'percentage';
@@ -31,13 +31,14 @@ const DischargeStatusTableWithPagination: React.FC<DischargeStatusTableWithPagin
 
   // Filter data based on search term
   const filteredData = useMemo(() => {
-    if (!searchTerm) return cancellationChargeData as CancellationChargeData[];
+    if (!searchTerm) return cancellationChargeData as DischargeStatusData[];
     
-    return (cancellationChargeData as CancellationChargeData[]).filter(charge =>
-      charge.chargeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      charge.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      charge.chargeType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      charge.amount.toString().includes(searchTerm)
+    return (cancellationChargeData as DischargeStatusData[]).filter(
+      (charge) =>
+        charge.chargeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        charge.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        charge.chargeType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        charge.amount.toString().includes(searchTerm)
     );
   }, [searchTerm]);
 

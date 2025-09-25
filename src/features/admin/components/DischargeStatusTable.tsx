@@ -25,7 +25,7 @@ import {
 import TableSkeleton from '../../../components/common-table/TableSkeleton';
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 
-interface CancellationChargeData {
+interface DischargeStatusData {
   id: string;
   chargeName: string;
   chargeType: 'fixed' | 'percentage';
@@ -37,7 +37,7 @@ interface CancellationChargeData {
 }
 
 interface DischargeStatusTableProps {
-  data?: CancellationChargeData[];
+  data?: DischargeStatusData[];
   loading?: boolean;
   onStatusChange?: (chargeId: string, newStatus: 'active' | 'inactive') => void;
   onEdit?: (chargeId: string) => void;
@@ -54,7 +54,7 @@ const DischargeStatusTable: React.FC<DischargeStatusTableProps> = ({
   loading = false,
   onEdit,
 }) => {
-  const [tableData, setTableData] = useState<CancellationChargeData[]>(data);
+  const [tableData, setTableData] = useState<DischargeStatusData[]>(data);
 
   useEffect(() => {
     if (!loading) {
@@ -110,7 +110,7 @@ const DischargeStatusTable: React.FC<DischargeStatusTableProps> = ({
           },
         }}
       >
-        <Table aria-label="cancellation charge table" sx={tableCellCss}>
+        <Table aria-label="discharge status table" sx={tableCellCss}>
           <TableHead>
             <TableRow>
               {tableHeaders.map((header) => (
@@ -149,7 +149,7 @@ const DischargeStatusTable: React.FC<DischargeStatusTableProps> = ({
                       fontSize: "14px",
                     }}
                   >
-                    No cancellation charges available
+                    No discharge status available
                   </Typography>
                 </TableCell>
               </TableRow>

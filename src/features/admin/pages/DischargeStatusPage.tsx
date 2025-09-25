@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import DischargeStatusHeader from '../components/DischargeStatusHeader';
 import DischargeStatusSearchFilter from '../components/DischargeStatusSearchFilter';
-import DischargeStatusTableWithPagination from '../components/DischargeStatusTableWithPagination';
 import AddNewDischargeModal from "../components/AddNewDischargeModal";
-import { type CancellationChargeFormData } from '../components/AddNewDischargeModal';
+import { type DischargeStatusData } from '../components/AddNewDischargeModal';
+import DischargeStatusTableWithPagination from '../components/DischargeStatusTableWithPagination';
 
 const DischargeStatusPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editingChargeData, setEditingChargeData] = useState<Partial<CancellationChargeFormData> | null>(null);
+  const [editingChargeData, setEditingChargeData] = useState<Partial<DischargeStatusData> | null>(null);
 
   const handleNewCharge = () => {
     setIsEditMode(false);
@@ -23,7 +23,7 @@ const DischargeStatusPage: React.FC = () => {
     // Here you would typically fetch the charge data by ID
     // For now, we'll use mock data
     console.log('Editing cancellation charge:', chargeId);
-    const mockChargeData: Partial<CancellationChargeFormData> = {
+    const mockChargeData: Partial<DischargeStatusData> = {
       chargeName: 'Late Cancellation Fee',
     };
     
@@ -38,7 +38,7 @@ const DischargeStatusPage: React.FC = () => {
     setEditingChargeData(null);
   };
 
-  const handleSubmitCharge = (data: CancellationChargeFormData) => {
+  const handleSubmitCharge = (data: DischargeStatusData) => {
     console.log('Cancellation charge data submitted:', data);
     // Here you would typically make an API call to save the charge data
     // For now, we'll just log the data
