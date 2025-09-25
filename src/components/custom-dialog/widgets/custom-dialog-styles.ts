@@ -14,6 +14,10 @@ export const customDialogStyles = {
       borderRadius: "12px",
       boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
       border: "1px solid #E3ECEF",
+      zIndex: 9999,
+    },
+    "& .MuiBackdrop-root": {
+      zIndex: 9998,
     },
   },
   dialogTitle: {

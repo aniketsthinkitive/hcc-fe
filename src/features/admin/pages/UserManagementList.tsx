@@ -10,21 +10,28 @@ import {
   TableHead,
   TableRow,
   IconButton,
-  Tooltip,
   TextField,
   InputAdornment,
   useTheme,
   useMediaQuery,
   Popover,
   Portal,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Select,
+  FormControl,
 } from '@mui/material';
 import {
   Add as AddIcon,
-  EditOutlined as EditIcon,
-  DeleteOutlined as DeleteIcon,
+  MoreVert as MoreVertIcon,
   FilterAltOutlined as FilterIcon,
   Search as SearchIcon,
+  KeyboardArrowDown as KeyboardArrowDownIcon,
 } from '@mui/icons-material';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
 import CustomButton from '../../../components/custom-buttons/custom-buttons';
 import {
   heading,
@@ -37,8 +44,18 @@ import Paginator from '../../../components/pagination/pagination';
 import CustomFilterSort, { type FilterField } from '../../../components/custom-filter-sort/custom-filter-sort';
 import AddNewUserDrawer from '../components/AddNewUserDrawer';
 import EditNewUserDrawer from '../components/EditNewUserDrawer';
+import ConfirmationPopUp from '../../../components/confirmation-pop-up/confirmation-pop-up';
+import CommonSnackbar from '../../../components/common-snackbar/common-snackbar';
 import { type UserFormData } from '../components/AddNewUser';
 import { type UserData } from '../components/EditNewUser';
+
+// Type definitions for better type safety
+interface SnackbarState {
+  isOpen: boolean;
+  message: string;
+  status: 'success' | 'error';
+}
+
 
 // Mock user data
 const mockUsers: UserData[] = [
@@ -228,6 +245,19 @@ const filterFields: FilterField[] = [
   },
 ];
 
+/**
+ * UserManagementList Component
+ * 
+ * A comprehensive user management interface that provides:
+ * - User listing with pagination
+ * - Search and filtering capabilities
+ * - Archive/unarchive functionality
+ * - Status management (Active/Inactive)
+ * - User creation and editing
+ * - Confirmation dialogs for critical actions
+ * 
+ * @returns {JSX.Element} The UserManagementList component
+ */
 const UserManagementList: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Below 1024px
@@ -235,8 +265,10 @@ const UserManagementList: React.FC = () => {
   const [users, setUsers] = useState(mockUsers);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // For future loading state implementation
   const [currentPage, setCurrentPage] = useState(0);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
+  const [archiveFilter, setArchiveFilter] = useState<'all' | 'archived' | 'unarchived'>('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [activeFilterField, setActiveFilterField] = useState<string>('');
@@ -244,153 +276,483 @@ const UserManagementList: React.FC = () => {
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isEditUserOpen, setIsEditUserOpen] = useState(false);
   const [selectedUserForEdit, setSelectedUserForEdit] = useState<UserData | null>(null);
+  const [actionAnchorEl, setActionAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [selectedUserForAction, setSelectedUserForAction] = useState<UserData | null>(null);
+  const [showArchiveConfirmation, setShowArchiveConfirmation] = useState(false);
+  const [userToArchive, setUserToArchive] = useState<UserData | null>(null);
+  const [showStatusConfirmation, setShowStatusConfirmation] = useState(false);
+  const [userToChangeStatus, setUserToChangeStatus] = useState<UserData | null>(null);
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    isOpen: false,
+    message: '',
+    status: 'success'
+  });
 
+  /**
+   * Handles status toggle for a user
+   * @param userId - The ID of the user to toggle status for
+   */
   const handleStatusToggle = (userId: number) => {
-    setUsers(prevUsers =>
-      prevUsers.map(user =>
-        user.id === userId ? { ...user, status: !user.status } : user
-      )
-    );
+    const userToToggle = users.find(user => user.id === userId);
+    if (userToToggle) {
+      setUserToChangeStatus(userToToggle);
+      setShowStatusConfirmation(true);
+    }
   };
 
-  const handleEditUser = (userId: number) => {
-    const userToEdit = users.find(user => user.id === userId);
-    if (userToEdit) {
-      setSelectedUserForEdit(userToEdit);
+
+  /**
+   * Handles action button click to show dropdown menu
+   * @param event - Mouse event from the action button
+   * @param user - The user data for the selected row
+   */
+  const handleActionClick = (event: React.MouseEvent<HTMLButtonElement>, user: UserData) => {
+    setActionAnchorEl(event.currentTarget);
+    setSelectedUserForAction(user);
+  };
+
+  /**
+   * Handles closing the action dropdown menu
+   */
+  const handleActionClose = () => {
+    try {
+      setActionAnchorEl(null);
+      setSelectedUserForAction(null);
+    } catch (error) {
+      console.error('Error closing action menu:', error);
+    }
+  };
+
+  /**
+   * Handles editing a user
+   * @param user - The user data to edit
+   */
+  const handleEditUser = (user: UserData) => {
+    try {
+      setSelectedUserForEdit(user);
       setIsEditUserOpen(true);
+      handleActionClose();
+    } catch (error) {
+      console.error('Error opening edit user:', error);
     }
   };
 
-  const handleDeleteUser = (userId: number) => {
-    // Delete logic would go here
-    console.log('Delete user:', userId);
+  /**
+   * Handles archiving a user
+   * @param user - The user data to archive
+   */
+  const handleArchiveUser = (user: UserData) => {
+    try {
+      setUserToArchive(user);
+      setShowArchiveConfirmation(true);
+      handleActionClose();
+    } catch (error) {
+      console.error('Error opening archive confirmation:', error);
+    }
   };
 
+  /**
+   * Handles opening the add new user drawer
+   */
   const handleAddNewUser = () => {
-    setIsAddUserOpen(true);
-  };
-
-  const handleCloseAddUser = () => {
-    setIsAddUserOpen(false);
-  };
-
-  const handleSubmitNewUser = (data: UserFormData) => {
-    console.log('New user data:', data);
-    // Here you would typically make an API call to create the user
-    // For now, we'll just log the data and close the drawer
-    setIsAddUserOpen(false);
-  };
-
-  const handleCloseEditUser = () => {
-    setIsEditUserOpen(false);
-    setSelectedUserForEdit(null);
-  };
-
-  const handleSubmitEditUser = (data: UserFormData) => {
-    console.log('Edit user data:', data);
-    // Here you would typically make an API call to update the user
-    // For now, we'll just log the data and close the drawer
-    setIsEditUserOpen(false);
-    setSelectedUserForEdit(null);
-  };
-
-  // Filter data based on search term and applied filters
-  const filteredUsers = useMemo(() => {
-    let filtered = users;
-
-    // Apply search term filter
-    if (searchTerm) {
-      filtered = filtered.filter(user =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.userEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.alertEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.office.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.organization.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+    try {
+      setIsAddUserOpen(true);
+    } catch (error) {
+      console.error('Error opening add user drawer:', error);
     }
+  };
 
-    // Apply additional filters
-    Object.entries(appliedFilters).forEach(([filterKey, filterValue]) => {
-      if (filterValue.trim()) {
-        filtered = filtered.filter(user => {
-          switch (filterKey) {
-            case 'name':
-              return user.name.toLowerCase().includes(filterValue.toLowerCase());
-            case 'username':
-              return user.username.toLowerCase().includes(filterValue.toLowerCase());
-            case 'role':
-              return user.role === filterValue;
-            case 'userEmail':
-              return user.userEmail.toLowerCase().includes(filterValue.toLowerCase());
-            case 'office':
-              return user.office === filterValue;
-            case 'status':
-              const isActive = filterValue === 'active';
-              return user.status === isActive;
-            case 'organization':
-              return user.organization === filterValue;
-            default:
-              return true;
-          }
-        });
+  /**
+   * Handles closing the add new user drawer
+   */
+  const handleCloseAddUser = () => {
+    try {
+      setIsAddUserOpen(false);
+    } catch (error) {
+      console.error('Error closing add user drawer:', error);
+    }
+  };
+
+  const handleSubmitNewUser = async (_data: UserFormData) => {
+    setIsSubmitting(true);
+    
+    try {
+      // Here you would typically make an API call to create the user
+      // await api.post('/users', data);
+      
+      // For now, we'll just close the drawer
+      setIsAddUserOpen(false);
+      
+      // Show success message
+      setSnackbar({
+        isOpen: true,
+        message: 'User created successfully!',
+        status: 'success'
+      });
+    } catch (error) {
+      // Show error message
+      setSnackbar({
+        isOpen: true,
+        message: 'Failed to create user. Please try again.',
+        status: 'error'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  /**
+   * Handles closing the edit user drawer
+   */
+  const handleCloseEditUser = () => {
+    try {
+      setIsEditUserOpen(false);
+      setSelectedUserForEdit(null);
+    } catch (error) {
+      console.error('Error closing edit user drawer:', error);
+    }
+  };
+
+  const handleSubmitEditUser = async (_data: UserFormData) => {
+    setIsSubmitting(true);
+    
+    try {
+      // Here you would typically make an API call to update the user
+      // await api.put(`/users/${selectedUserForEdit?.id}`, data);
+      
+      // For now, we'll just close the drawer
+      setIsEditUserOpen(false);
+      setSelectedUserForEdit(null);
+      
+      // Show success message
+      setSnackbar({
+        isOpen: true,
+        message: 'User updated successfully!',
+        status: 'success'
+      });
+    } catch (error) {
+      // Show error message
+      setSnackbar({
+        isOpen: true,
+        message: 'Failed to update user. Please try again.',
+        status: 'error'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleConfirmArchive = async () => {
+    if (!userToArchive) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const isCurrentlyArchived = userToArchive.isArchived;
+      const newArchiveStatus = !isCurrentlyArchived;
+
+      // Here you would typically make an API call to archive/unarchive the user
+      // await api.patch(`/users/${userToArchive.id}`, { isArchived: newArchiveStatus });
+      
+      // For now, we'll update the local state
+      setUsers(prevUsers =>
+        prevUsers.map(user =>
+          user.id === userToArchive.id ? { ...user, isArchived: newArchiveStatus } : user
+        )
+      );
+
+      // Show success message
+      setSnackbar({
+        isOpen: true,
+        message: `User "${userToArchive.name}" has been ${newArchiveStatus ? 'archived' : 'unarchived'} successfully!`,
+        status: 'success'
+      });
+
+      // Close confirmation popup
+      setShowArchiveConfirmation(false);
+      setUserToArchive(null);
+    } catch (error) {
+      // Show error message
+      setSnackbar({
+        isOpen: true,
+        message: `Failed to ${userToArchive.isArchived ? 'unarchive' : 'archive'} user. Please try again.`,
+        status: 'error'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  /**
+   * Handles canceling archive operation
+   */
+  const handleCancelArchive = () => {
+    try {
+      setShowArchiveConfirmation(false);
+      setUserToArchive(null);
+    } catch (error) {
+      console.error('Error canceling archive:', error);
+    }
+  };
+
+  const handleConfirmStatusChange = async () => {
+    if (!userToChangeStatus) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const newStatus = !userToChangeStatus.status;
+
+      // Here you would typically make an API call to update the user status
+      // await api.patch(`/users/${userToChangeStatus.id}`, { status: newStatus });
+      
+      // For now, we'll update the local state
+      setUsers(prevUsers =>
+        prevUsers.map(user =>
+          user.id === userToChangeStatus.id ? { ...user, status: newStatus } : user
+        )
+      );
+
+      // Show success message
+      setSnackbar({
+        isOpen: true,
+        message: `User "${userToChangeStatus.name}" status has been changed to ${newStatus ? 'Active' : 'Inactive'} successfully!`,
+        status: 'success'
+      });
+
+      // Close confirmation popup
+      setShowStatusConfirmation(false);
+      setUserToChangeStatus(null);
+    } catch (error) {
+      // Show error message
+      setSnackbar({
+        isOpen: true,
+        message: `Failed to update user status. Please try again.`,
+        status: 'error'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  /**
+   * Handles canceling status change operation
+   */
+  const handleCancelStatusChange = () => {
+    try {
+      setShowStatusConfirmation(false);
+      setUserToChangeStatus(null);
+    } catch (error) {
+      console.error('Error canceling status change:', error);
+    }
+  };
+
+  /**
+   * Handles closing the snackbar
+   */
+  const handleSnackbarClose = () => {
+    try {
+      setSnackbar(prev => ({ ...prev, isOpen: false }));
+    } catch (error) {
+      console.error('Error closing snackbar:', error);
+    }
+  };
+
+  /**
+   * Filters users based on search term, archive filter, and applied filters
+   * @returns Filtered array of users
+   */
+  const filteredUsers = useMemo(() => {
+    try {
+      let filtered = users;
+
+      // Apply archive filter
+      if (archiveFilter === 'archived') {
+        filtered = filtered.filter(user => user.isArchived === true);
+      } else if (archiveFilter === 'unarchived') {
+        filtered = filtered.filter(user => user.isArchived !== true);
       }
-    });
+      // If archiveFilter === 'all', show all users
 
-    return filtered;
-  }, [users, searchTerm, appliedFilters]);
+      // Apply search term filter
+      if (searchTerm && searchTerm.trim()) {
+        const searchLower = searchTerm.toLowerCase().trim();
+        filtered = filtered.filter(user =>
+          (user.name?.toLowerCase().includes(searchLower)) ||
+          (user.username?.toLowerCase().includes(searchLower)) ||
+          (user.role?.toLowerCase().includes(searchLower)) ||
+          (user.userEmail?.toLowerCase().includes(searchLower)) ||
+          (user.alertEmail?.toLowerCase().includes(searchLower)) ||
+          (user.office?.toLowerCase().includes(searchLower)) ||
+          (user.organization?.toLowerCase().includes(searchLower))
+        );
+      }
 
-  // Paginate the filtered data
+      // Apply additional filters
+      Object.entries(appliedFilters).forEach(([filterKey, filterValue]) => {
+        if (filterValue && filterValue.trim()) {
+          filtered = filtered.filter(user => {
+            try {
+              switch (filterKey) {
+                case 'name':
+                  return user.name?.toLowerCase().includes(filterValue.toLowerCase());
+                case 'username':
+                  return user.username?.toLowerCase().includes(filterValue.toLowerCase());
+                case 'role':
+                  return user.role === filterValue;
+                case 'userEmail':
+                  return user.userEmail?.toLowerCase().includes(filterValue.toLowerCase());
+                case 'office':
+                  return user.office === filterValue;
+                case 'status':
+                  const isActive = filterValue === 'active';
+                  return user.status === isActive;
+                case 'organization':
+                  return user.organization === filterValue;
+                default:
+                  return true;
+              }
+            } catch (error) {
+              console.error(`Error filtering by ${filterKey}:`, error);
+              return true; // Include user if filter fails
+            }
+          });
+        }
+      });
+
+      return filtered;
+    } catch (error) {
+      console.error('Error filtering users:', error);
+      return users; // Return all users if filtering fails
+    }
+  }, [users, searchTerm, archiveFilter, appliedFilters]);
+
+  /**
+   * Paginates the filtered users data
+   * @returns Paginated array of users
+   */
   const paginatedUsers = useMemo(() => {
-    const startIndex = currentPage * recordsPerPage;
-    const endIndex = startIndex + recordsPerPage;
-    return filteredUsers.slice(startIndex, endIndex);
+    try {
+      const startIndex = currentPage * recordsPerPage;
+      const endIndex = startIndex + recordsPerPage;
+      return filteredUsers.slice(startIndex, endIndex);
+    } catch (error) {
+      console.error('Error paginating users:', error);
+      return [];
+    }
   }, [filteredUsers, currentPage, recordsPerPage]);
 
-  // Calculate pagination values
-  const totalPages = Math.ceil(filteredUsers.length / recordsPerPage);
+  // Calculate pagination values with error handling
+  const totalPages = useMemo(() => {
+    try {
+      return Math.max(1, Math.ceil(filteredUsers.length / recordsPerPage));
+    } catch (error) {
+      console.error('Error calculating total pages:', error);
+      return 1;
+    }
+  }, [filteredUsers.length, recordsPerPage]);
 
+  /**
+   * Handles page change with validation
+   * @param _event - Unused event parameter
+   * @param page - The new page number
+   */
   const handlePageChange = (_event: React.ChangeEvent<unknown> | null, page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
-    setRecordsPerPage(newRecordsPerPage);
-    setCurrentPage(0); // Reset to first page when changing records per page
-  };
-
-  // Filter handlers
-  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setFilterAnchorEl(event.currentTarget);
-    setIsFilterOpen(true);
-    if (!activeFilterField && filterFields.length > 0) {
-      setActiveFilterField(filterFields[0].id);
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
     }
   };
 
+  /**
+   * Handles records per page change with validation
+   * @param newRecordsPerPage - The new number of records per page
+   */
+  const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
+    if (newRecordsPerPage > 0) {
+      setRecordsPerPage(newRecordsPerPage);
+      setCurrentPage(0); // Reset to first page when changing records per page
+    }
+  };
+
+  /**
+   * Handles archive filter change with validation
+   * @param value - The new archive filter value
+   */
+  const handleArchiveFilterChange = (value: 'all' | 'archived' | 'unarchived') => {
+    const validValues: Array<'all' | 'archived' | 'unarchived'> = ['all', 'archived', 'unarchived'];
+    if (validValues.includes(value)) {
+      setArchiveFilter(value);
+      setCurrentPage(0); // Reset to first page when changing filter
+    }
+  };
+
+  /**
+   * Handles filter button click with validation
+   * @param event - Mouse event from the filter button
+   */
+  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      setFilterAnchorEl(event.currentTarget);
+      setIsFilterOpen(true);
+      if (!activeFilterField && filterFields.length > 0) {
+        setActiveFilterField(filterFields[0].id);
+      }
+    } catch (error) {
+      console.error('Error opening filter:', error);
+    }
+  };
+
+  /**
+   * Handles filter field change with validation
+   * @param fieldId - The ID of the selected filter field
+   */
   const handleFilterFieldChange = (fieldId: string) => {
-    setActiveFilterField(fieldId);
+    const validFieldIds = filterFields.map(field => field.id);
+    if (validFieldIds.includes(fieldId)) {
+      setActiveFilterField(fieldId);
+    }
   };
 
   const handleFilterValueChange = (_fieldId: string, _value: string) => {
     // This will be handled by the CustomFilterSort component internally
   };
 
+  /**
+   * Handles applying filters with validation
+   * @param filters - Object containing filter key-value pairs
+   */
   const handleApplyFilters = (filters: Record<string, string>) => {
-    setAppliedFilters(filters);
-    setCurrentPage(0); // Reset to first page when applying filters
-    setIsFilterOpen(false);
+    try {
+      setAppliedFilters(filters);
+      setCurrentPage(0); // Reset to first page when applying filters
+      setIsFilterOpen(false);
+    } catch (error) {
+      console.error('Error applying filters:', error);
+    }
   };
 
+  /**
+   * Handles clearing all filters
+   */
   const handleClearAllFilters = () => {
-    setAppliedFilters({});
-    setCurrentPage(0); // Reset to first page when clearing filters
+    try {
+      setAppliedFilters({});
+      setCurrentPage(0); // Reset to first page when clearing filters
+    } catch (error) {
+      console.error('Error clearing filters:', error);
+    }
   };
 
+  /**
+   * Handles canceling filter operations
+   */
   const handleCancelFilters = () => {
-    setIsFilterOpen(false);
-    setFilterAnchorEl(null);
+    try {
+      setIsFilterOpen(false);
+      setFilterAnchorEl(null);
+    } catch (error) {
+      console.error('Error canceling filters:', error);
+    }
   };
 
   return (
@@ -462,106 +824,137 @@ const UserManagementList: React.FC = () => {
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'stretch',
+            justifyContent: 'space-between',
             alignItems: 'stretch',
             padding: '16px',
-            gap: '109px', // Gap from Figma design
             backgroundColor: '#FFFFFF',
             borderBottom: '1px solid #E2E5E8',
           }}
         >
-          {/* Search Section */}
+          {/* Left side - Empty for now */}
+          <Box sx={{ flex: 1 }} />
+
+          {/* Right side - Search and Filter Elements */}
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: '16px',
-              flex: 1,
+              gap: '16px', // Gap between elements
             }}
           >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                flex: 1,
-              }}
-            >
-              <TextField
-                placeholder="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                size="small"
+            {/* Archive Filter Dropdown */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <Select
+                value={archiveFilter}
+                onChange={(e) => handleArchiveFilterChange(e.target.value as 'all' | 'archived' | 'unarchived')}
+                displayEmpty
                 sx={{
-                  width: '320px',
-                  '& .MuiOutlinedInput-root': {
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: '6px',
-                    border: '1px solid #CDD0CD', // Neutral/20
-                    boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)', // Shadow/xs
-                    '&:hover': {
-                      borderColor: '#A9ACA9', // Neutral/40
-                    },
-                    '&.Mui-focused': {
-                      borderColor: '#439322', // Primary color
-                      boxShadow: '0px 0px 0px 3px rgba(67, 147, 34, 0.1)',
-                    },
-                    '& fieldset': {
-                      border: 'none', // Remove default border
-                    },
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '6px',
+                  border: '1px solid #CDD0CD', // Neutral/20
+                  boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)', // Shadow/xs
+                  '&:hover': {
+                    borderColor: '#A9ACA9', // Neutral/40
                   },
-                  '& .MuiOutlinedInput-input': {
+                  '&.Mui-focused': {
+                    borderColor: '#439322', // Primary color
+                    boxShadow: '0px 0px 0px 3px rgba(67, 147, 34, 0.1)',
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: 'none', // Remove default border
+                  },
+                  '& .MuiSelect-select': {
                     padding: '8px 10px',
                     fontSize: '14px',
                     fontWeight: 400,
                     lineHeight: '1.6',
-                    color: '#A9ACA9', // Neutral/40 for placeholder
+                    color: '#424342', // Neutral/70
                     fontFamily: '"Helvetica Neue", Arial, sans-serif',
-                    '&::placeholder': {
-                      color: '#A9ACA9', // Neutral/40
-                      opacity: 1,
-                    },
                   },
                 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon 
-                        sx={{ 
-                          width: 18, 
-                          height: 18, 
-                          color: '#757775' // Neutral/60
-                        }} 
-                      />
-                    </InputAdornment>
-                  ),
-                }}
-              />
+                IconComponent={KeyboardArrowDownIcon}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="unarchived">Unarchived</MenuItem>
+                <MenuItem value="archived">Archived</MenuItem>
+              </Select>
+            </FormControl>
 
-              {/* Filter Button */}
-              <IconButton
-                onClick={handleFilterClick}
-                sx={{
+            {/* Filter Button */}
+            <IconButton
+              onClick={handleFilterClick}
+              sx={{
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #C5C9C5', // Neutral/30
+                borderRadius: '6px',
+                padding: '10px',
+                boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)', // Shadow/xs
+                '&:hover': {
+                  backgroundColor: '#F9FAF9', // Neutral/1
+                  borderColor: '#A9ACA9', // Neutral/40
+                },
+              }}
+            >
+              <FilterIcon 
+                sx={{ 
+                  width: 18, 
+                  height: 18, 
+                  color: '#2C2D2C' // Neutral/80
+                }} 
+              />
+            </IconButton>
+
+            {/* Search Section */}
+            <TextField
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              size="small"
+              sx={{
+                width: '320px',
+                '& .MuiOutlinedInput-root': {
                   backgroundColor: '#FFFFFF',
-                  border: '1px solid #C5C9C5', // Neutral/30
                   borderRadius: '6px',
-                  padding: '10px',
+                  border: '1px solid #CDD0CD', // Neutral/20
                   boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)', // Shadow/xs
                   '&:hover': {
-                    backgroundColor: '#F9FAF9', // Neutral/1
                     borderColor: '#A9ACA9', // Neutral/40
                   },
-                }}
-              >
-                <FilterIcon 
-                  sx={{ 
-                    width: 18, 
-                    height: 18, 
-                    color: '#2C2D2C' // Neutral/80
-                  }} 
-                />
-              </IconButton>
-            </Box>
+                  '&.Mui-focused': {
+                    borderColor: '#439322', // Primary color
+                    boxShadow: '0px 0px 0px 3px rgba(67, 147, 34, 0.1)',
+                  },
+                  '& fieldset': {
+                    border: 'none', // Remove default border
+                  },
+                },
+                '& .MuiOutlinedInput-input': {
+                  padding: '8px 10px',
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  lineHeight: '1.6',
+                  color: '#A9ACA9', // Neutral/40 for placeholder
+                  fontFamily: '"Helvetica Neue", Arial, sans-serif',
+                  '&::placeholder': {
+                    color: '#A9ACA9', // Neutral/40
+                    opacity: 1,
+                  },
+                },
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon 
+                      sx={{ 
+                        width: 18, 
+                        height: 18, 
+                        color: '#757775' // Neutral/60
+                      }} 
+                    />
+                  </InputAdornment>
+                ),
+              }}
+            />
           </Box>
         </Box>
       </Box>
@@ -972,38 +1365,25 @@ const UserManagementList: React.FC = () => {
                           display: 'flex', 
                           alignItems: 'center', 
                           justifyContent: 'center',
-                          gap: 1,
                         }}>
-                          <Tooltip title="Edit User">
-                            <IconButton
-                              size="small"
-                              onClick={() => handleEditUser(user.id)}
-                              sx={{
-                                padding: '4px',
-                                borderRadius: '6px',
-                                '&:hover': {
-                                  backgroundColor: '#f5f5f5',
-                                },
-                              }}
-                            >
-                              <EditIcon sx={{ fontSize: 16, color: '#424342' }} />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Delete User">
-                            <IconButton
-                              size="small"
-                              onClick={() => handleDeleteUser(user.id)}
-                              sx={{
-                                padding: '4px',
-                                borderRadius: '6px',
-                                '&:hover': {
-                                  backgroundColor: '#f5f5f5',
-                                },
-                              }}
-                            >
-                              <DeleteIcon sx={{ fontSize: 16, color: '#424342' }} />
-                            </IconButton>
-                          </Tooltip>
+                          <IconButton
+                            onClick={(e) => handleActionClick(e, user)}
+                            sx={{
+                              padding: '4px',
+                              borderRadius: '6px',
+                              '&:hover': {
+                                backgroundColor: 'rgba(67, 147, 34, 0.04)',
+                              },
+                            }}
+                          >
+                            <MoreVertIcon 
+                              sx={{ 
+                                width: 18, 
+                                height: 18, 
+                                color: '#2C2D2C' // Neutral/80
+                              }} 
+                            />
+                          </IconButton>
                         </Box>
                       </TableCell>
                     </TableRow>
@@ -1043,6 +1423,103 @@ const UserManagementList: React.FC = () => {
           )}
         </Box>
       </Box>
+
+
+      {/* Action Dropdown Menu */}
+      <Menu
+        anchorEl={actionAnchorEl}
+        open={Boolean(actionAnchorEl)}
+        onClose={handleActionClose}
+        slotProps={{
+          paper: {
+            sx: {
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #DFE5E2',
+              borderRadius: '6px',
+              boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.03), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)',
+              padding: '4px 0',
+              minWidth: '120px',
+            },
+          },
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      >
+        <MenuItem
+          onClick={() => selectedUserForAction && handleEditUser(selectedUserForAction)}
+          sx={{
+            padding: '10px 14px',
+            gap: '8px',
+            '&:hover': {
+              backgroundColor: 'rgba(67, 147, 34, 0.04)',
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: '18px' }}>
+            <EditOutlinedIcon 
+              sx={{ 
+                width: 18, 
+                height: 18, 
+                color: '#2C2D2C' // Neutral/80
+              }} 
+            />
+          </ListItemIcon>
+          <ListItemText
+            primary="Edit"
+            slotProps={{
+              primary: {
+                sx: {
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  lineHeight: '1.15',
+                  color: '#2C2D2C', // Neutral/80
+                  fontFamily: '"Helvetica Neue", Arial, sans-serif',
+                },
+              },
+            }}
+          />
+        </MenuItem>
+        <MenuItem
+          onClick={() => selectedUserForAction && handleArchiveUser(selectedUserForAction)}
+          sx={{
+            padding: '10px 14px',
+            gap: '8px',
+            '&:hover': {
+              backgroundColor: 'rgba(67, 147, 34, 0.04)',
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: '18px' }}>
+            <ArchiveOutlinedIcon 
+              sx={{ 
+                width: 18, 
+                height: 18, 
+                color: '#2C2D2C' // Neutral/80
+              }} 
+            />
+          </ListItemIcon>
+          <ListItemText
+            primary={selectedUserForAction?.isArchived ? "Unarchive" : "Archive"}
+            slotProps={{
+              primary: {
+                sx: {
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  lineHeight: '1.15',
+                  color: '#2C2D2C', // Neutral/80
+                  fontFamily: '"Helvetica Neue", Arial, sans-serif',
+                },
+              },
+            }}
+          />
+        </MenuItem>
+      </Menu>
 
       {/* Filter Popover */}
       <Popover
@@ -1102,6 +1579,35 @@ const UserManagementList: React.FC = () => {
         />
       )}
     </Portal>
+
+    {/* Confirmation Popup for Archive/Unarchive */}
+    <ConfirmationPopUp
+      open={showArchiveConfirmation}
+      onClose={handleCancelArchive}
+      onConfirm={handleConfirmArchive}
+      message={userToArchive ? `Are you sure you want to ${userToArchive.isArchived ? 'unarchive' : 'archive'} user "${userToArchive.name}"? ${userToArchive.isArchived ? 'This will restore the user and make them active again.' : 'This action can be undone later.'}` : ''}
+      sx={{ zIndex: 9999 }}
+    />
+
+    {/* Confirmation Popup for Status Change */}
+    <ConfirmationPopUp
+      open={showStatusConfirmation}
+      onClose={handleCancelStatusChange}
+      onConfirm={handleConfirmStatusChange}
+      message={userToChangeStatus ? `Are you sure you want to change user "${userToChangeStatus.name}" status from ${userToChangeStatus.status ? 'Active' : 'Inactive'} to ${!userToChangeStatus.status ? 'Active' : 'Inactive'}?` : ''}
+      sx={{ zIndex: 9999 }}
+    />
+
+    {/* Common Snackbar */}
+    <CommonSnackbar
+      isOpen={snackbar.isOpen}
+      message={snackbar.message}
+      status={snackbar.status}
+      onClose={handleSnackbarClose}
+      position="bottom-right"
+      autoClose={true}
+      autoCloseDelay={5000}
+    />
     </>
   );
 };

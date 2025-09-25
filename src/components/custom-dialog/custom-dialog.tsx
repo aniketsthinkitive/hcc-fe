@@ -42,7 +42,11 @@ const CustomDialog = (props: React.PropsWithChildren<CustomDialogProps>) => {
       aria-labelledby="customized-dialog-title"
       open={open}
       fullWidth
-      sx={{ paper: customDialogStyles.dialog, ...sx }}
+      sx={{ 
+        paper: customDialogStyles.dialog, 
+        zIndex: 9999,
+        ...sx 
+      }}
       PaperProps={{
         sx: {
           width: width || "auto",

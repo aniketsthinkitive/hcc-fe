@@ -7,6 +7,7 @@ import CustomInput from '../../../components/custom-input/custom-input';
 import CustomAutoComplete from '../../../components/custom-auto-complete/custom-auto-complete';
 import CustomButton from '../../../components/custom-buttons/custom-buttons';
 import CustomLabel from '../../../components/custom-label/custom-label';
+import CommonSnackbar from '../../../components/common-snackbar/common-snackbar';
 import { Add as AddIcon } from '@mui/icons-material';
 
 // Form validation schema
@@ -68,11 +69,15 @@ export interface UserData {
   }>;
   lastLoginAttempt?: string;
   passwordDaysLeft?: number;
+  isArchived?: boolean;
 }
 
 interface EditNewUserProps {
+  /** User data to populate the form */
   userData: UserData;
-  onSubmit: (data: UserFormData) => void;
+  /** Function to handle form submission - can be async for API calls */
+  onSubmit: (data: UserFormData) => Promise<void> | void;
+  /** Function to handle form cancellation */
   onCancel: () => void;
 }
 
@@ -100,6 +105,7 @@ const organizationalAssociationOptions = [
   { key: 'medical-group', value: 'Medical Group' },
 ];
 
+
 const EditNewUser: React.FC<EditNewUserProps> = ({
   userData,
   onSubmit,
@@ -112,8 +118,17 @@ const EditNewUser: React.FC<EditNewUserProps> = ({
   const [phoneNumbers, setPhoneNumbers] = useState([
     { number: '', extension: '', use: '' }
   ]);
-  const [hasChanges, setHasChanges] = useState(false);
-  const [showWarning, setShowWarning] = useState(false);
+  
+  
+  // Snackbar state
+  const [snackbar, setSnackbar] = useState({
+    isOpen: false,
+    message: '',
+    status: 'success' as 'success' | 'error'
+  });
+  
+  // Loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Parse user data to extract first and last name
   const parseUserName = (fullName: string) => {
@@ -180,24 +195,36 @@ const EditNewUser: React.FC<EditNewUserProps> = ({
     setPhoneNumbers(phoneNumbersWithDefaults);
   }, [userData]);
 
-  useEffect(() => {
-    // Check if any field has changed from initial values
-    const hasFormChanges = Object.keys(watchedValues).some(key => {
-      if (key === 'phoneNumbers') {
-        return JSON.stringify(watchedValues[key]) !== JSON.stringify(initialValues[key]);
-      }
-      return watchedValues[key as keyof UserFormData] !== initialValues[key as keyof UserFormData];
-    });
 
-    setHasChanges(hasFormChanges);
-    if (hasFormChanges) {
-      setShowWarning(true);
+  const handleFormSubmit = async (data: UserFormData) => {
+    setIsSubmitting(true);
+    
+    try {
+      // Call the parent onSubmit function (can be async)
+      await onSubmit({ ...data, phoneNumbers });
+      
+      // Show success message
+      setSnackbar({
+        isOpen: true,
+        message: 'User updated successfully!',
+        status: 'success'
+      });
+    } catch (error) {
+      // Show error message
+      setSnackbar({
+        isOpen: true,
+        message: 'Failed to update user. Please try again.',
+        status: 'error'
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-  }, [watchedValues, initialValues]);
-
-  const handleFormSubmit = (data: UserFormData) => {
-    onSubmit({ ...data, phoneNumbers });
   };
+
+  const handleSnackbarClose = () => {
+    setSnackbar(prev => ({ ...prev, isOpen: false }));
+  };
+
 
   const handleAddPhoneNumber = () => {
     const newPhoneNumbers = [...phoneNumbers, { number: '', extension: '', use: '' }];
@@ -211,6 +238,7 @@ const EditNewUser: React.FC<EditNewUserProps> = ({
     setPhoneNumbers(newPhoneNumbers);
     setValue('phoneNumbers', newPhoneNumbers);
   };
+
 
   return (
     <Box
@@ -274,21 +302,6 @@ const EditNewUser: React.FC<EditNewUserProps> = ({
           flexDirection: "column",
         }}
       >
-        {/* Warning Message */}
-        {showWarning && hasChanges && (
-          <Alert 
-            severity="warning" 
-            sx={{ 
-              mb: 2,
-              '& .MuiAlert-message': {
-                fontSize: '14px',
-                fontFamily: '"Helvetica Neue", Arial, sans-serif',
-              }
-            }}
-          >
-            You have made changes to the user information. Please save your changes.
-          </Alert>
-        )}
 
         <Box sx={{ 
           display: "flex", 
@@ -706,11 +719,27 @@ const EditNewUser: React.FC<EditNewUserProps> = ({
           <CustomButton variant="secondary" size="md" onClick={onCancel}>
             Cancel
           </CustomButton>
-          <CustomButton variant="primary" size="md" type="submit">
-            Save
+          <CustomButton 
+            variant="primary" 
+            size="md" 
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Saving...' : 'Save'}
           </CustomButton>
         </Box>
       </Box>
+
+      {/* Common Snackbar */}
+      <CommonSnackbar
+        isOpen={snackbar.isOpen}
+        message={snackbar.message}
+        status={snackbar.status}
+        onClose={handleSnackbarClose}
+        position="bottom-right"
+        autoClose={true}
+        autoCloseDelay={5000}
+      />
     </Box>
   );
 };

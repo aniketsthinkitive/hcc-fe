@@ -7,7 +7,8 @@ import CustomInput from '../../../components/custom-input/custom-input';
 import CustomAutoComplete from '../../../components/custom-auto-complete/custom-auto-complete';
 import CustomButton from '../../../components/custom-buttons/custom-buttons';
 import CustomLabel from '../../../components/custom-label/custom-label';
-import { Add as AddIcon } from '@mui/icons-material';
+import CommonSnackbar from '../../../components/common-snackbar/common-snackbar';
+import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
 // Form validation schema
 const userFormSchema = yup.object({
@@ -47,7 +48,9 @@ export interface UserFormData {
 }
 
 interface AddNewUserProps {
-  onSubmit: (data: UserFormData) => void;
+  /** Function to handle form submission - can be async for API calls */
+  onSubmit: (data: UserFormData) => Promise<void> | void;
+  /** Function to handle form cancellation */
   onCancel: () => void;
 }
 
@@ -61,19 +64,28 @@ const userRoleOptions = [
 
 const phoneUseOptions = [
   { key: 'private', value: 'Private' },
-  { key: 'office', value: 'Office' },
+  { key: 'fax', value: 'Fax' },
+  { key: 'cell', value: 'Cell' },
+  { key: 'work', value: 'Work' },
+  { key: 'home', value: 'Home' },
+  { key: 'main', value: 'Main' },
+  { key: 'pager', value: 'Pager' },
 ];
 
-const officeAssociationOptions = [
+const userOfficeAssociationOptions = [
   { key: 'main', value: 'Main' },
   { key: 'branch-a', value: 'Branch A' },
   { key: 'branch-b', value: 'Branch B' },
+  { key: 'branch-c', value: 'Branch C' },
 ];
 
 const organizationalAssociationOptions = [
+  { key: 'all', value: 'All' },
   { key: 'healthcare-corp', value: 'Healthcare Corp' },
   { key: 'medical-group', value: 'Medical Group' },
+  { key: 'clinic-network', value: 'Clinic Network' },
 ];
+
 
 const AddNewUser: React.FC<AddNewUserProps> = ({
   onSubmit,
@@ -86,6 +98,16 @@ const AddNewUser: React.FC<AddNewUserProps> = ({
   const [phoneNumbers, setPhoneNumbers] = useState([
     { number: '', extension: '', use: '' }
   ]);
+  
+  // Snackbar state
+  const [snackbar, setSnackbar] = useState({
+    isOpen: false,
+    message: '',
+    status: 'success' as 'success' | 'error'
+  });
+  
+  // Loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const initialValues = {
     username: '',
@@ -112,8 +134,33 @@ const AddNewUser: React.FC<AddNewUserProps> = ({
     mode: 'onChange', // This will trigger validation on change and blur
   });
 
-  const handleFormSubmit = (data: UserFormData) => {
-    onSubmit({ ...data, phoneNumbers });
+  const handleFormSubmit = async (data: UserFormData) => {
+    setIsSubmitting(true);
+    
+    try {
+      // Call the parent onSubmit function (can be async)
+      await onSubmit({ ...data, phoneNumbers });
+      
+      // Show success message
+      setSnackbar({
+        isOpen: true,
+        message: 'User added successfully!',
+        status: 'success'
+      });
+    } catch (error) {
+      // Show error message
+      setSnackbar({
+        isOpen: true,
+        message: 'Failed to add user. Please try again.',
+        status: 'error'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbar(prev => ({ ...prev, isOpen: false }));
   };
 
   const handleAddPhoneNumber = () => {
@@ -127,6 +174,14 @@ const AddNewUser: React.FC<AddNewUserProps> = ({
     newPhoneNumbers[index] = { ...newPhoneNumbers[index], [field]: value };
     setPhoneNumbers(newPhoneNumbers);
     setValue('phoneNumbers', newPhoneNumbers);
+  };
+
+  const handleDeletePhoneNumber = (index: number) => {
+    if (phoneNumbers.length > 1) {
+      const newPhoneNumbers = phoneNumbers.filter((_, i) => i !== index);
+      setPhoneNumbers(newPhoneNumbers);
+      setValue('phoneNumbers', newPhoneNumbers);
+    }
   };
 
   return (
@@ -391,7 +446,8 @@ const AddNewUser: React.FC<AddNewUserProps> = ({
               <Box key={index} sx={{ 
                 display: "flex", 
                 gap: isMobile ? "8px" : "16px",
-                flexDirection: isMobile ? "column" : "row"
+                flexDirection: isMobile ? "column" : "row",
+                alignItems: isMobile ? "stretch" : "flex-end"
               }}>
                 <Box
                   sx={{
@@ -447,6 +503,26 @@ const AddNewUser: React.FC<AddNewUserProps> = ({
                     maxHeightForOptionsList={200}
                   />
                 </Box>
+
+                {phoneNumbers.length > 1 && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "40px",
+                      height: "40px",
+                      cursor: "pointer",
+                      borderRadius: "6px",
+                      "&:hover": {
+                        backgroundColor: "#F6F6F6",
+                      },
+                    }}
+                    onClick={() => handleDeletePhoneNumber(index)}
+                  >
+                    <DeleteIcon sx={{ fontSize: "20px", color: "#757775" }} />
+                  </Box>
+                )}
               </Box>
             ))}
 
@@ -504,7 +580,7 @@ const AddNewUser: React.FC<AddNewUserProps> = ({
               render={({ field }) => (
                 <Box
                   sx={{
-                    width: isMobile ? "100%" : isTablet ? "100%" : "287px",
+                    flex: 1,
                     display: "flex",
                     flexDirection: "column",
                     gap: "6px",
@@ -514,7 +590,7 @@ const AddNewUser: React.FC<AddNewUserProps> = ({
                   <CustomAutoComplete
                     value={String(field.value)}
                     placeholder="Select"
-                    options={officeAssociationOptions}
+                    options={userOfficeAssociationOptions}
                     onChange={(selectedValue) => {
                       setValue("userOfficeAssociation", selectedValue, {
                         shouldValidate: true,
@@ -522,7 +598,7 @@ const AddNewUser: React.FC<AddNewUserProps> = ({
                     }}
                     hasError={!!errors.userOfficeAssociation}
                     errorMessage={errors.userOfficeAssociation?.message}
-                    maxHeightForOptionsList={250}
+                    maxHeightForOptionsList={200}
                   />
                 </Box>
               )}
@@ -534,7 +610,7 @@ const AddNewUser: React.FC<AddNewUserProps> = ({
               render={({ field }) => (
                 <Box
                   sx={{
-                    width: isMobile ? "100%" : isTablet ? "100%" : "287px",
+                    flex: 1,
                     display: "flex",
                     flexDirection: "column",
                     gap: "6px",
@@ -552,66 +628,53 @@ const AddNewUser: React.FC<AddNewUserProps> = ({
                     }}
                     hasError={!!errors.organizationalAssociation}
                     errorMessage={errors.organizationalAssociation?.message}
-                    maxHeightForOptionsList={250}
+                    maxHeightForOptionsList={200}
                   />
                 </Box>
               )}
             />
           </Box>
 
-          {/* Last Login Info */}
-          <Box sx={{ 
-            display: "flex", 
-            gap: isMobile ? "12px" : isTablet ? "24px" : "40px", 
-            flexWrap: "wrap",
-            flexDirection: isMobile ? "column" : "row"
-          }}>
-            <Box sx={{ display: "flex", gap: "4px" }}>
-              <Typography sx={{ fontSize: "14px", color: "#757775", fontFamily: "Helvetica Neue" }}>
-                Last Login Attempt
-              </Typography>
-              <Typography sx={{ fontSize: "14px", color: "#757775", fontFamily: "Helvetica Neue" }}>
-                :
-              </Typography>
-              <Typography sx={{ fontSize: "14px", color: "#424342", fontFamily: "Helvetica Neue" }}>
-                03/21/2025 11:00 AM
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", gap: "4px" }}>
-              <Typography sx={{ fontSize: "14px", color: "#757775", fontFamily: "Helvetica Neue" }}>
-                Password Days Left
-              </Typography>
-              <Typography sx={{ fontSize: "14px", color: "#757775", fontFamily: "Helvetica Neue" }}>
-                :
-              </Typography>
-              <Typography sx={{ fontSize: "14px", color: "#424342", fontFamily: "Helvetica Neue" }}>
-                12
-              </Typography>
-            </Box>
-          </Box>
         </Box>
 
         {/* Fixed Footer with Buttons */}
         <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          gap: "10px",
-          padding: "12px 16px",
-          borderTop: "1px solid #E3ECEF",
-          backgroundColor: "#FFFFFF",
-          flexShrink: 0,
-        }}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            gap: "10px",
+            padding: "12px 16px",
+            borderTop: "1px solid #E3ECEF",
+            backgroundColor: "#FFFFFF",
+            flexShrink: 0,
+            marginTop: "auto",
+          }}
         >
           <CustomButton variant="secondary" size="md" onClick={onCancel}>
             Cancel
           </CustomButton>
-          <CustomButton variant="primary" size="md" type="submit">
-            Save
+          <CustomButton 
+            variant="primary" 
+            size="md" 
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Saving...' : 'Save'}
           </CustomButton>
         </Box>
       </Box>
+
+      {/* Common Snackbar */}
+      <CommonSnackbar
+        isOpen={snackbar.isOpen}
+        message={snackbar.message}
+        status={snackbar.status}
+        onClose={handleSnackbarClose}
+        position="bottom-right"
+        autoClose={true}
+        autoCloseDelay={5000}
+      />
     </Box>
   );
 };
