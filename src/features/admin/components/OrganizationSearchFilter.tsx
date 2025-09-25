@@ -3,12 +3,12 @@ import { Box, type SelectChangeEvent } from '@mui/material';
 import CustomSelect from '../../../components/custom-select/custom-select';
 import CustomInput from '../../../components/custom-input/custom-input';
 
-interface OfficeSearchFilterProps {
+interface OrganizationSearchFilterProps {
   onSearch?: (searchTerm: string) => void;
   onStatusChange?: (status: string) => void;
 }
 
-const OfficeSearchFilter: React.FC<OfficeSearchFilterProps> = ({ 
+const OrganizationSearchFilter: React.FC<OrganizationSearchFilterProps> = ({ 
   onSearch, 
   onStatusChange 
 }) => {
@@ -29,8 +29,8 @@ const OfficeSearchFilter: React.FC<OfficeSearchFilterProps> = ({
 
   const statusOptions = [
     { value: 'all', label: 'All' },
-    { value: 'archive', label: 'Archive' },
-    { value: 'unarchive', label: 'Unarchive' }
+    { value: 'active', label: 'Active' },
+    { value: 'inactive', label: 'Inactive' }
   ];
 
   return (
@@ -68,7 +68,7 @@ const OfficeSearchFilter: React.FC<OfficeSearchFilterProps> = ({
           }}
         >
           <CustomInput
-            placeholder="Search By Office"
+            placeholder="Search By Organization"
             name="search"
             value={searchTerm}
             onChange={handleSearchChange}
@@ -80,4 +80,4 @@ const OfficeSearchFilter: React.FC<OfficeSearchFilterProps> = ({
   );
 };
 
-export default OfficeSearchFilter;
+export default OrganizationSearchFilter;

@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import AllOrganizationsHeader from '../components/AllOrganizationsHeader';
-import SearchFilterSection from '../components/SearchFilterSection';
-import NewOrganizationSidebar from '../components/NewOrganizationSidebar';
+import OrganizationSearchFilter from '../components/OrganizationSearchFilter';
+import NewOrganizationModal from '../components/NewOrganizationModal';
 import OrganizationsTable from '../components/OrganizationsTable';
 import Paginator from '../../../components/pagination/pagination';
-import type { OrganizationData } from '../types/organization.types';
+import type { OrganizationData, OrganizationFormData } from '../types/organization.types';
 
 const AllOrganizations: React.FC = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [organizations, setOrganizations] = useState<OrganizationData[]>([
     {
       id: '1',
@@ -64,7 +65,7 @@ const AllOrganizations: React.FC = () => {
 
   const handleNewOrganization = () => {
     setEditingOrganization(null);
-    setSidebarOpen(true);
+    setModalOpen(true);
   };
 
   const handleEditOrganization = (id: string) => {
@@ -74,7 +75,7 @@ const AllOrganizations: React.FC = () => {
     console.log('Found organization to edit:', orgToEdit);
     if (orgToEdit) {
       setEditingOrganization(orgToEdit);
-      setSidebarOpen(true);
+      setModalOpen(true);
     }
   };
 
@@ -83,9 +84,16 @@ const AllOrganizations: React.FC = () => {
     // TODO: Implement archive functionality
   };
 
-  const handleCloseSidebar = () => {
-    setSidebarOpen(false);
+  const handleCloseModal = () => {
+    setModalOpen(false);
     setEditingOrganization(null);
+  };
+
+  const handleOrganizationSubmit = (data: OrganizationFormData) => {
+    console.log('Organization form submitted:', data);
+    // TODO: Implement organization creation/update logic
+    // For now, just close the modal
+    handleCloseModal();
   };
 
   const handleSearchChange = (value: string) => {
@@ -93,9 +101,9 @@ const AllOrganizations: React.FC = () => {
     // TODO: Implement search functionality
   };
 
-  const handleFilterClick = () => {
-    console.log('Filter clicked');
-    // TODO: Implement filter functionality
+  const handleStatusFilterChange = (status: string) => {
+    setStatusFilter(status);
+    // TODO: Implement status filter functionality
   };
 
   const handleStatusToggle = (id: string, status: 'active' | 'inactive') => {
@@ -124,12 +132,13 @@ const AllOrganizations: React.FC = () => {
       flexDirection: 'column', 
       minHeight: '100vh',
       width: '100%',
-      overflow: 'hidden'
+      overflow: 'auto'
     }}>
       {/* Header Section */}
       <Box sx={{ 
-        padding: { xs: 2, sm: 3 },
-        width: '100%'
+        width: '100%',
+        overflow: 'visible',
+        flexShrink: 0
       }}>
         <AllOrganizationsHeader
           onDownloadCSV={handleDownloadCSV}
@@ -137,10 +146,9 @@ const AllOrganizations: React.FC = () => {
         />
 
         {/* Search and Filter Section */}
-        <SearchFilterSection
-          searchValue={searchValue}
-          onSearchChange={handleSearchChange}
-          onFilterClick={handleFilterClick}
+        <OrganizationSearchFilter
+          onSearch={handleSearchChange}
+          onStatusChange={handleStatusFilterChange}
         />
       </Box>
 
@@ -181,11 +189,19 @@ const AllOrganizations: React.FC = () => {
         />
       </Box>
 
-      {/* New Organization Sidebar */}
-      <NewOrganizationSidebar
-        open={sidebarOpen}
-        onClose={handleCloseSidebar}
-        editingData={editingOrganization}
+      {/* New Organization Modal */}
+      <NewOrganizationModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleOrganizationSubmit}
+        initialData={editingOrganization ? {
+          organizationName: editingOrganization.organization,
+          organizationShortName: editingOrganization.organization,
+          organizationTimeZone: editingOrganization.timeZone,
+          usesDaylightSavings: editingOrganization.usesDST === 'Y',
+          clientsVisibleToAllUsers: editingOrganization.visibleToAllUsers === 'Y',
+        } : undefined}
+        isEdit={!!editingOrganization}
       />
     </Box>
   );

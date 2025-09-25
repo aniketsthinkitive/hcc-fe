@@ -3,7 +3,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUp from "@mui/icons-material/ArrowDropUp";
 import Search from "@mui/icons-material/Search";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography, InputAdornment } from "@mui/material";
 import { type ChangeEvent, useEffect, useState } from "react";
 import { customInputStyles, errorStyle } from "./custom-input-styles";
 
@@ -117,9 +117,17 @@ export default function CustomInput(props: CustomInputProps) {
       <Box sx={rootStyles}>
         {/* Start Icon or Search Icon */}
         {(icon || (hasStartSearchIcon && !startSearchIconOnRight)) && (
-          <Box sx={customInputStyles.iconStyle}>
-            {icon || <Search />}
-          </Box>
+          <InputAdornment position="start">
+            {icon || (
+              <Search 
+                sx={{
+                  width: 18, 
+                  height: 18, 
+                  color: '#757775' // Neutral/60
+                }} 
+              />
+            )}
+          </InputAdornment>
         )}
         
         {/* Input Field */}
@@ -209,9 +217,15 @@ export default function CustomInput(props: CustomInputProps) {
 
         {/* End Search Icon */}
         {hasStartSearchIcon && startSearchIconOnRight && (
-          <Box sx={customInputStyles.iconStyle}>
-            <Search />
-          </Box>
+          <InputAdornment position="end">
+            <Search 
+              sx={{ 
+                width: 18, 
+                height: 18, 
+                color: '#757775' // Neutral/60
+              }} 
+            />
+          </InputAdornment>
         )}
       </Box>
 

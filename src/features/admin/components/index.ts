@@ -4,5 +4,5 @@ export { default as CompanyInformationContent } from './CompanyInformationConten
 export { default as CompanyInformationEditModal } from './CompanyInformationEditModal';
 export { default as CompanyInformationHeader } from './CompanyInformationHeader';
 export { default as SearchFilterSection } from './SearchFilterSection';
-export { default as NewOrganizationSidebar } from './NewOrganizationSidebar';
+export { default as NewOrganizationModal } from './NewOrganizationModal';
 export { default as OrganizationsTable } from './OrganizationsTable';
