@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, IconButton } from '@mui/material';
 import { Download as DownloadIcon, Add as AddIcon } from '@mui/icons-material';
 
 interface AllOrganizationsHeaderProps {
@@ -20,7 +20,7 @@ const AllOrganizationsHeader: React.FC<AllOrganizationsHeaderProps> = ({
           xs: "flex-start",
           sm: "space-between",
           md: "space-between",
-          lg: "space-between"
+          lg: "space-between",
         },
         alignItems: { xs: "flex-start", sm: "center" },
         gap: { xs: 2, sm: 0 },
@@ -30,7 +30,7 @@ const AllOrganizationsHeader: React.FC<AllOrganizationsHeaderProps> = ({
         maxWidth: "100%",
         overflow: "hidden",
         boxSizing: "border-box",
-        paddingRight: "30px"
+        paddingRight: "30px",
       }}
     >
       {/* Page Title */}
@@ -81,7 +81,8 @@ const AllOrganizationsHeader: React.FC<AllOrganizationsHeaderProps> = ({
             flexShrink: 0,
             "&:hover": {
               borderColor: "#439322",
-              backgroundColor: "rgba(67, 147, 34, 0.04)",
+              backgroundColor: "#ffffff",
+              color: "#2C2D2C",
               boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.1)",
             },
             "& .MuiButton-startIcon": {

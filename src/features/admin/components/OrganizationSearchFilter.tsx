@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Box, type SelectChangeEvent } from '@mui/material';
+import { Box, IconButton, type SelectChangeEvent } from '@mui/material';
 import CustomSelect from '../../../components/custom-select/custom-select';
 import CustomInput from '../../../components/custom-input/custom-input';
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 interface OrganizationSearchFilterProps {
   onSearch?: (searchTerm: string) => void;
@@ -45,37 +46,60 @@ const OrganizationSearchFilter: React.FC<OrganizationSearchFilterProps> = ({
         backgroundColor: "#FFFFFF",
       }}
     >
-        <Box
+      <IconButton
+        onClick={() => {}}
+        sx={{
+          backgroundColor: "#FFFFFF",
+          border: "1px solid #C5C9C5", // Neutral/30
+          borderRadius: "6px",
+          padding: "10px",
+          boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)", // Shadow/xs
+          "&:hover": {
+            backgroundColor: "#F9FAF9", // Neutral/1
+            borderColor: "#A9ACA9", // Neutral/40
+          },
+        }}
+      >
+        <FilterAltIcon
           sx={{
-            display: "flex",
-            alignItems: "center",
+            width: 18,
+            height: 18,
+            color: "#2C2D2C", // Neutral/80
           }}
-        >
-          <CustomSelect
-            placeholder="All"
-            name="status"
-            value={statusValue}
-            items={statusOptions}
-            onChange={handleStatusChange}
-            bgWhite={true}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-          }}
-        >
-          <CustomInput
-            placeholder="Search By Organization"
-            name="search"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            hasStartSearchIcon={true}
-            bgWhite={true}
-          />
-        </Box>
+        />
+      </IconButton>
+
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <CustomSelect
+          placeholder="All"
+          name="status"
+          value={statusValue}
+          items={statusOptions}
+          onChange={handleStatusChange}
+          bgWhite={true}
+        />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+        }}
+      >
+        <CustomInput
+          placeholder="Search By Organization"
+          name="search"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          hasStartSearchIcon={true}
+          bgWhite={true}
+        />
+      </Box>
     </Box>
   );
 };
